@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Vege.Models;
+using Vege.Repositories;
 
 namespace Vege
 {
@@ -28,6 +30,9 @@ namespace Vege
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddSingleton(this.Configuration);
+            services.AddDbContext<VegeContext>();
+            services.AddScoped<IVegeRepository, VegeRepository>();
             services.AddMvc();
         }
 
@@ -36,7 +41,9 @@ namespace Vege
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            app.UseDeveloperExceptionPage();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }
