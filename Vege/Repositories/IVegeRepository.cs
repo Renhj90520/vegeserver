@@ -9,7 +9,7 @@ namespace Vege.Repositories
 {
     public interface IVegeRepository
     {
-        List<ProductDTO> GetAllProduct(int? id, int? catetoryId);
+        List<Product> GetAllProduct(int? id, int? catetoryId);
 
         Task<Product> AddProduct(Product product);
 
@@ -18,6 +18,8 @@ namespace Vege.Repositories
         Task<bool> AddUnit(Unit unit);
         Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
         Task<bool> AddCartItem(string openId, CartItem cartItem);
-        Task<IEnumerable<OrderItemDTO>> GetAllOrders(string openId);
+        IEnumerable<Order> GetAllOrders(string openId);
+        Task<bool> AddOrder(Order order);
+
     }
 }

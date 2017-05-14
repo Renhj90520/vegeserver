@@ -22,7 +22,7 @@ namespace Vege.Controllers
         [HttpGet("{id?}")]
         public IActionResult GetAllProducts(int? id, [FromQuery]int? category)
         {
-            Result<List<ProductDTO>> result = new Result<List<ProductDTO>>();
+            Result<List<Product>> result = new Result<List<Product>>();
             try
             {
                 result.Body = this.vegeRepository.GetAllProduct(id, category);

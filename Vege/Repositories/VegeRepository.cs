@@ -40,7 +40,7 @@ namespace Vege.Repositories
             return (await this.context.SaveChangesAsync()) > 0;
         }
 
-        public List<ProductDTO> GetAllProduct(int? id, int? catetoryId)
+        public List<Product> GetAllProduct(int? id, int? catetoryId)
         {
             var products = this.context.Products.Include(p => p.Pictures).Select(p => p)
             .Where(p => p.State == 1);
@@ -57,7 +57,7 @@ namespace Vege.Repositories
             var result = (from p in products
                           join u in this.context.Units on p.UnitId equals u.Id into pus
                           from pu in pus.DefaultIfEmpty()
-                          select new ProductDTO()
+                          select new Product()
                           {
                               Id = p.Id,
                               Name = p.Name,
@@ -75,22 +75,27 @@ namespace Vege.Repositories
         public async Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid)
         {
             var cart = await this.context.ShoppingCarts.FirstOrDefaultAsync();
-
-            var cartItems = from cp in cart.Products
-                            join p in this.context.Products on cp.ProductId equals p.Id
-                            join u in this.context.Units on p.UnitId equals u.Id
-                            select new CartItemDTO
-                            {
-                                Id = p.Id,
-                                Count = cp.Count,
-                                Description = p.Description,
-                                Name = p.Name,
-                                Pictures = p.Pictures,
-                                Price = p.Price,
-                                UnitName = u.Name
-                            };
-
-            return cartItems;
+            if (cart != null)
+            {
+                var cartItems = from cp in cart.Products
+                                join p in this.context.Products on cp.ProductId equals p.Id
+                                join u in this.context.Units on p.UnitId equals u.Id
+                                select new CartItemDTO
+                                {
+                                    Id = p.Id,
+                                    Count = cp.Count,
+                                    Description = p.Description,
+                                    Name = p.Name,
+                                    Pictures = p.Pictures,
+                                    Price = p.Price,
+                                    UnitName = u.Name
+                                };
+                return cartItems;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<bool> AddCartItem(string openId, CartItem cartItem)
@@ -114,10 +119,27 @@ namespace Vege.Repositories
             }
         }
 
-        public async Task<IEnumerable<OrderItemDTO>> GetAllOrders(string openId)
+        public IEnumerable<Order> GetAllOrders(string openId)
         {
-            //var orders =this.context.Orders.Include<>
-            throw new NotImplementedException();
+            var orders = this.context.Orders.Include(order => order.Products)
+            .ThenInclude(item => item.Join(this.context.Products, i => i.ProductId, p => p.Id, (ii, pp) => new OrderItemDTO
+            {
+                CategoryId = pp.CategoryId,
+                Count = ii.Count,
+                Description = pp.Description,
+                Id = pp.Id,
+                Name = pp.Name,
+                Pictures = pp.Pictures,
+                Price = ii.Price,
+                UnitName = pp.UnitName
+            }));
+            return orders;
+        }
+
+        public async Task<bool> AddOrder(Order order)
+        {
+            this.context.Orders.Add(order);
+            return (await this.context.SaveChangesAsync()) > 0;
         }
     }
 }

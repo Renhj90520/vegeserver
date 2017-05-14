@@ -9,7 +9,7 @@ namespace Vege.Models
     public class Order
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public int OpenId { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime CancelTime { get; set; }
         public DateTime FinishTime { get; set; }
