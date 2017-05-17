@@ -13,6 +13,7 @@ namespace Vege.Models
         public double TotalCount { get; set; }
         public int UnitId { get; set; }
         public string UnitName { get; set; }
+        public int Step { get; set; }
         public double Price { get; set; }
         public string Description { get; set; }
         public int State { get; set; } = 1;
