@@ -20,12 +20,12 @@ namespace Vege.Controllers
             this.vegeRepository = vegeRepository;
         }
         [HttpGet("{id?}")]
-        public IActionResult GetAllProducts(int? id, [FromQuery]int? category)
+        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage)
         {
-            Result<List<Product>> result = new Result<List<Product>>();
+            Result<ItemsResult<Product>> result = new Result<ItemsResult<Product>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllProduct(id, category);
+                result.Body = this.vegeRepository.GetAllProduct(id, category, index, perPage);
                 result.State = 1;
             }
             catch (Exception ex)

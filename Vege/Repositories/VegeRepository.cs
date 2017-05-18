@@ -40,7 +40,7 @@ namespace Vege.Repositories
             return (await this.context.SaveChangesAsync()) > 0;
         }
 
-        public List<Product> GetAllProduct(int? id, int? catetoryId)
+        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage)
         {
             var products = this.context.Products.Include(p => p.Pictures).Select(p => p)
             .Where(p => p.State == 1);
@@ -54,22 +54,33 @@ namespace Vege.Repositories
                 products = products.Where(p => p.Id == id);
             }
 
-            var result = (from p in products
-                          join u in this.context.Units on p.UnitId equals u.Id into pus
-                          from pu in pus.DefaultIfEmpty()
-                          select new Product()
-                          {
-                              Id = p.Id,
-                              Name = p.Name,
-                              CategoryId = p.CategoryId,
-                              Description = p.Description,
-                              Pictures = p.Pictures,
-                              Price = p.Price,
-                              TotalCount = p.TotalCount,
-                              UnitName = pu.Name
-                          });
+            var items = (from p in products
+                         join u in this.context.Units on p.UnitId equals u.Id into pus
+                         from pu in pus.DefaultIfEmpty()
+                         select new Product()
+                         {
+                             Id = p.Id,
+                             Name = p.Name,
+                             CategoryId = p.CategoryId,
+                             Description = p.Description,
+                             Pictures = p.Pictures,
+                             Price = p.Price,
+                             TotalCount = p.TotalCount,
+                             UnitName = pu.Name
+                         });
 
-            return result.ToList();
+            var result = new ItemsResult<Product>();
+            result.Count = items.Count();
+            if (index != null)
+            {
+                result.Items = items.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
+            }
+            else
+            {
+                result.Items = items;
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid)
@@ -140,6 +151,18 @@ namespace Vege.Repositories
         {
             this.context.Orders.Add(order);
             return (await this.context.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<IEnumerable<Unit>> GetAllUnits()
+        {
+            return await context.Units.ToListAsync();
+        }
+
+        public async Task<bool> DeleteUnit(int id)
+        {
+            var unit = await this.context.Units.FirstOrDefaultAsync(u => u.Id == id);
+            this.context.Remove(unit);
+            return (await this.context.SaveChangesAsync() > 0);
         }
     }
 }

@@ -43,5 +43,22 @@ namespace Vege.Controllers
 
             return Ok(result);
         }
+
+        public async Task<IActionResult> GetAllUnits()
+        {
+            Result<IEnumerable<Unit>> result = new Result<IEnumerable<Unit>>();
+            try
+            {
+                result.Body = await this.vegeRepository.GetAllUnits();
+                result.State = 1;
+            }
+            catch (Exception ex)
+            {
+                result.Body = null;
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
     }
 }
