@@ -45,14 +45,7 @@ namespace Vege
             loggerFactory.AddDebug();
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
-            app.UseStaticFiles(
-                new StaticFileOptions()
-                {
-                    FileProvider = new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(), @"upload")
-                    )
-                }
-            );
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }
