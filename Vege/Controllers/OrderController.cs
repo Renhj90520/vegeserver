@@ -21,12 +21,12 @@ namespace Vege.Controllers
 
         // GET: api/values
         [HttpGet("/{openid?}")]
-        public IActionResult GetAllProductsInOrder(string openid)
+        public IActionResult GetAllProductsInOrder(string openid,[FromQuery]int? index,[FromQuery]int? perPage)
         {
             Result<IEnumerable<Order>> result = new Result<IEnumerable<Order>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllOrders(openid);
+                result.Body = this.vegeRepository.GetAllOrders(openid,index,perPage);
                 result.State = 1;
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace Vege.Controllers
         }
 
         // POST api/values
-        [HttpPost("{openid?}")]
+        [HttpPost("/{openid?}")]
         public async Task<IActionResult> Post(string opendid, [FromBody]Order order)
         {
             Result<Object> result = new Result<object>();

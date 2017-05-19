@@ -15,9 +15,11 @@ namespace Vege.Controllers
     public class UploadController : Controller
     {
         private IHostingEnvironment env;
-        public UploadController(IHostingEnvironment env)
+        private IVegeRepository vegeRepository;
+        public UploadController(IHostingEnvironment env,IVegeRepository vegeRepository)
         {
             this.env = env;
+            this.vegeRepository=vegeRepository;
         }
         // POST api/values
         [HttpPost]
@@ -26,20 +28,32 @@ namespace Vege.Controllers
             long size = file.Length;
             var fileName = file.FileName;
             var extension = fileName.Substring(fileName.LastIndexOf('.'));
-
+            string path=@"upload/"+ DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
             var filePath = Path.Combine(this.env.WebRootPath, "upload", DateTime.Now.ToString("yyyyMMddHHmmss") + extension);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return Ok(new { path = filePath });
+            var picture=await this.vegeRepository.AddPicture(fileName,path);
+
+            return Ok(picture);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            Result<Object> result=new Result<Object>();
+            string path=await this.vegeRepository.GetFilePath(id);
+            if(!string.isNullOrEmpty(path)){
+                var fullPath=Path.Combine(this.env.WebRootPath,path));
+                if(File.Exists(Path.Combine(this.env.WebRootPath,path))){
+                    File.Delete(fullPath);
+                }
+            }
+            result.State=1;
+            return Ok(result);
         }
     }
 }

@@ -14,13 +14,15 @@ namespace Vege.Repositories
         Task<Product> AddProduct(Product product);
 
         Task<bool> AddCategory(Category category);
-
+        Task<IEnumerable<Category>> GetAllCategories();
         Task<bool> AddUnit(Unit unit);
         Task<IEnumerable<Unit>> GetAllUnits();
         Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
         Task<bool> AddCartItem(string openId, CartItem cartItem);
-        IEnumerable<Order> GetAllOrders(string openId);
+        ItemsResult<Order> GetAllOrders(string openId,int? index,int? perPage);
         Task<bool> AddOrder(Order order);
         Task<bool> DeleteUnit(int id);
+        Task<string> GetFilePath(int id);
+        Task<Picture> AddPicture(string name,string path);
     }
 }

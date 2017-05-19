@@ -43,7 +43,14 @@ namespace Vege
             loggerFactory.AddDebug();
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseStaticFiles(
+                new StaticFileOptions(){
+                    FileProvider =new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(),@"upload"),
+                        RequestPath=new PathString("upload")
+                    )
+                }
+            );
             app.UseMvc();
         }
     }

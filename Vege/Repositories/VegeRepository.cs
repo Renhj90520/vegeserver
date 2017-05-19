@@ -130,7 +130,7 @@ namespace Vege.Repositories
             }
         }
 
-        public IEnumerable<Order> GetAllOrders(string openId)
+        public ItemsResult<Order> GetAllOrders(string openId,int? index,int? perPage)
         {
             var orders = this.context.Orders.Include(order => order.Products)
             .ThenInclude(item => item.Join(this.context.Products, i => i.ProductId, p => p.Id, (ii, pp) => new OrderItemDTO
@@ -144,7 +144,16 @@ namespace Vege.Repositories
                 Price = ii.Price,
                 UnitName = pp.UnitName
             }));
-            return orders;
+
+            ItemsResult<Order> result=new ItemsResult<Order>();
+            result.Count=orders.Count();
+            if(index!=null){
+                result.Items=orders.Skip((index.Value-1)*perPage.Value).Take(perPage.Value);
+            }
+            else{
+                result.Items=orders;
+            }
+            return result;
         }
 
         public async Task<bool> AddOrder(Order order)
@@ -163,6 +172,25 @@ namespace Vege.Repositories
             var unit = await this.context.Units.FirstOrDefaultAsync(u => u.Id == id);
             this.context.Remove(unit);
             return (await this.context.SaveChangesAsync() > 0);
+        }
+
+        public async Task<IEnumerable<Category>> GetAllCategories(){
+            return (await this.context.Categories.ToListAsync());
+        }
+
+        public async Task<Picture> AddPicture(string name,string path){
+            var picture=await this.context.Pictures.AddAsync(new Picture{Name=name,Path=path});
+            await this.context.SaveChangesAsync();
+            return picture;
+        }
+
+        public async Task<string> GetFilePath(int id){
+            var picture=await this.context.Pictures.Where(p=>p.id==id).FirstOrDefaultAsync();
+            if(picture!=null){
+                return picture.Path;
+            }else{
+                return "";
+            }
         }
     }
 }

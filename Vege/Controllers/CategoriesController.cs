@@ -42,5 +42,22 @@ namespace Vege.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories(){
+            Result<List<Category>> result=new Result<List<Category>>();
+            try
+            {
+                result.Body=await this.vegeRepository.GetAllCategories();
+                result.State=1;
+            }
+            catch (Exception ex)
+            {
+                result.Body=null;
+                result.State=0;
+                result.Message=ex.Message;
+            }
+            return Ok(result);
+        }
     }
 }
