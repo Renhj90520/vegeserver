@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Vege.Models;
 using Vege.Repositories;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Vege
 {
@@ -44,10 +46,10 @@ namespace Vege
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
             app.UseStaticFiles(
-                new StaticFileOptions(){
-                    FileProvider =new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(),@"upload"),
-                        RequestPath=new PathString("upload")
+                new StaticFileOptions()
+                {
+                    FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), @"upload")
                     )
                 }
             );

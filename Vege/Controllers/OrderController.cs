@@ -23,7 +23,7 @@ namespace Vege.Controllers
         [HttpGet("/{openid?}")]
         public IActionResult GetAllProductsInOrder(string openid,[FromQuery]int? index,[FromQuery]int? perPage)
         {
-            Result<IEnumerable<Order>> result = new Result<IEnumerable<Order>>();
+            Result<ItemsResult<Order>> result = new Result<ItemsResult<Order>>();
             try
             {
                 result.Body = this.vegeRepository.GetAllOrders(openid,index,perPage);

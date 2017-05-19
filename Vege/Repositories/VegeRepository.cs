@@ -130,7 +130,7 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<Order> GetAllOrders(string openId,int? index,int? perPage)
+        public ItemsResult<Order> GetAllOrders(string openId, int? index, int? perPage)
         {
             var orders = this.context.Orders.Include(order => order.Products)
             .ThenInclude(item => item.Join(this.context.Products, i => i.ProductId, p => p.Id, (ii, pp) => new OrderItemDTO
@@ -145,13 +145,15 @@ namespace Vege.Repositories
                 UnitName = pp.UnitName
             }));
 
-            ItemsResult<Order> result=new ItemsResult<Order>();
-            result.Count=orders.Count();
-            if(index!=null){
-                result.Items=orders.Skip((index.Value-1)*perPage.Value).Take(perPage.Value);
+            ItemsResult<Order> result = new ItemsResult<Order>();
+            result.Count = orders.Count();
+            if (index != null)
+            {
+                result.Items = orders.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
             }
-            else{
-                result.Items=orders;
+            else
+            {
+                result.Items = orders;
             }
             return result;
         }
@@ -174,21 +176,27 @@ namespace Vege.Repositories
             return (await this.context.SaveChangesAsync() > 0);
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategories(){
+        public async Task<IEnumerable<Category>> GetAllCategories()
+        {
             return (await this.context.Categories.ToListAsync());
         }
 
-        public async Task<Picture> AddPicture(string name,string path){
-            var picture=await this.context.Pictures.AddAsync(new Picture{Name=name,Path=path});
+        public async Task<Picture> AddPicture(string path)
+        {
+            var picture = await this.context.Pictures.AddAsync(new Picture { Path = path });
             await this.context.SaveChangesAsync();
-            return picture;
+            return picture.Entity;
         }
 
-        public async Task<string> GetFilePath(int id){
-            var picture=await this.context.Pictures.Where(p=>p.id==id).FirstOrDefaultAsync();
-            if(picture!=null){
+        public async Task<string> GetFilePath(int id)
+        {
+            var picture = await this.context.Pictures.Where(p => p.Id == id).FirstOrDefaultAsync();
+            if (picture != null)
+            {
                 return picture.Path;
-            }else{
+            }
+            else
+            {
                 return "";
             }
         }

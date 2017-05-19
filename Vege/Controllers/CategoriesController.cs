@@ -45,7 +45,7 @@ namespace Vege.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories(){
-            Result<List<Category>> result=new Result<List<Category>>();
+            Result<IEnumerable<Category>> result=new Result<IEnumerable<Category>>();
             try
             {
                 result.Body=await this.vegeRepository.GetAllCategories();

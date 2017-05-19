@@ -23,6 +23,6 @@ namespace Vege.Repositories
         Task<bool> AddOrder(Order order);
         Task<bool> DeleteUnit(int id);
         Task<string> GetFilePath(int id);
-        Task<Picture> AddPicture(string name,string path);
+        Task<Picture> AddPicture(string path);
     }
 }
