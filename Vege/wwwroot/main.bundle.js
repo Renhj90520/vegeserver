@@ -42,6 +42,8 @@ var CartService = (function () {
         if (openId) {
             url + openId;
         }
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
+        headers.set("Content-Type", "application/json");
         return this.http.post(url, product)
             .map(function (res) { return res.json(); });
     };
@@ -55,7 +57,7 @@ var CartService = (function () {
     };
     CartService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
     ], CartService);
     return CartService;
     var _a;
@@ -64,13 +66,74 @@ var CartService = (function () {
 
 /***/ }),
 
-/***/ 334:
+/***/ 220:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_settings__ = __webpack_require__(154);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var ProductService = (function () {
+    function ProductService(http) {
+        this.http = http;
+    }
+    ProductService.prototype.getAllProduct = function (id, index, perPage, category) {
+        var url = __WEBPACK_IMPORTED_MODULE_3__shared_settings__["a" /* baseUrl */] + "products/";
+        if (id) {
+            url += id + '/';
+        }
+        var condition = [];
+        if (index) {
+            condition.push('index=' + index);
+        }
+        if (perPage) {
+            condition.push('perPage=' + perPage);
+        }
+        if (category) {
+            condition.push('category=' + category);
+        }
+        if (condition.length > 0) {
+            url += '?';
+            url += condition.join('&');
+        }
+        return this.http.get(url)
+            .map(function (res) { return res.json(); });
+    };
+    ProductService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["p" /* Injectable */])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+    ], ProductService);
+    return ProductService;
+    var _a;
+}());
+//# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/product.service.js.map
+
+/***/ }),
+
+/***/ 335:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_service__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__product_product_service__ = __webpack_require__(220);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CartComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -84,18 +147,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var CartComponent = (function () {
-    function CartComponent(router, cartService) {
+    function CartComponent(router, cartService, productService) {
         this.router = router;
         this.cartService = cartService;
+        this.productService = productService;
         this.products = [];
+        this.suggestions = [];
+        this.totalCost = 0;
     }
     CartComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.cartService.getAllInCart().subscribe(function (res) {
+            console.log('-------------->cart ' + JSON.stringify(res));
             _this.message = res.message;
             _this.state = res.state;
-            _this.products = res.body;
+            _this.products = res.body || [];
+            if (_this.products.length <= 0) {
+                _this.productService.getAllProduct(null, 1, 10, null)
+                    .subscribe(function (res) {
+                    _this.suggestions = res.body.items || [];
+                });
+            }
+            else {
+                _this.totalCost = _this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+            }
         });
     };
     CartComponent.prototype.gotoOrder = function () {
@@ -103,37 +180,39 @@ var CartComponent = (function () {
     };
     CartComponent.prototype.onIncrease = function (product) {
         product.count++;
+        this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
     };
     CartComponent.prototype.onDecrease = function (product) {
         product.count--;
         if (product.count < 0) {
             product.count = 0;
         }
+        this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
     };
     CartComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-cart',
             template: __webpack_require__(693),
             styles: [__webpack_require__(685)],
-            providers: [__WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */]]
+            providers: [__WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */], __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]) === 'function' && _c) || Object])
     ], CartComponent);
     return CartComponent;
-    var _a, _b;
+    var _a, _b, _c;
 }());
 //# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/cart.component.js.map
 
 /***/ }),
 
-/***/ 335:
+/***/ 336:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__address_service__ = __webpack_require__(525);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__order_service__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__order_service__ = __webpack_require__(337);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_address__ = __webpack_require__(522);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OrderComponent; });
@@ -177,10 +256,10 @@ var OrderComponent = (function () {
     };
     OrderComponent.prototype.gotoOrders = function () {
         var _this = this;
-        var address = this.addresses.filter(function (a) { return a.ischecked; })[0];
-        if (address) {
-            address.products = this.products;
-            this.orderService.addOrder(address)
+        var address = this.addresses.filter(function (a) { return a.ischecked; });
+        if (address && address.length > 0) {
+            address[0].products = this.products;
+            this.orderService.addOrder(address[0])
                 .subscribe(function (res) {
                 _this.router.navigate(['orderlist'], { replaceUrl: true });
             }, function (err) {
@@ -194,8 +273,13 @@ var OrderComponent = (function () {
         }
     };
     OrderComponent.prototype.onAddAddress = function () {
+        var _this = this;
         this.addressService.addNewAddress(this.newAddr)
-            .subscribe();
+            .subscribe(function (res) {
+            if (res.state == 1 && res.body) {
+                _this.addresses.push(res.body);
+            }
+        });
     };
     OrderComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
@@ -213,7 +297,7 @@ var OrderComponent = (function () {
 
 /***/ }),
 
-/***/ 336:
+/***/ 337:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -258,7 +342,7 @@ var OrderService = (function () {
     };
     OrderService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
     ], OrderService);
     return OrderService;
     var _a;
@@ -267,12 +351,12 @@ var OrderService = (function () {
 
 /***/ }),
 
-/***/ 337:
+/***/ 338:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__order_order_service__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__order_order_service__ = __webpack_require__(337);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OrderlistComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -312,13 +396,13 @@ var OrderlistComponent = (function () {
 
 /***/ }),
 
-/***/ 338:
+/***/ 339:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(104);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__product_service__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__product_service__ = __webpack_require__(220);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_product__ = __webpack_require__(523);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductComponent; });
@@ -352,12 +436,13 @@ var ProductComponent = (function () {
             console.log('--------->id is ' + id);
             _this.productService.getAllProduct(id)
                 .subscribe(function (res) {
-                _this.result = res;
+                console.log('---------->res.body:' + JSON.stringify(res.body));
+                _this.product = res.body.items[0];
             });
         });
         this.cartService.getAllInCart()
             .subscribe(function (pro) {
-            _this.productInCart = pro.body;
+            _this.productInCart = pro.body || [];
             console.log('--------ProductInCart' + JSON
                 .stringify(_this.productInCart));
         });
@@ -367,12 +452,14 @@ var ProductComponent = (function () {
     };
     ProductComponent.prototype.onAddCart = function () {
         var _this = this;
-        var product = new __WEBPACK_IMPORTED_MODULE_4__models_product__["a" /* Product */](this.result.body.id, this.count);
+        var product = new __WEBPACK_IMPORTED_MODULE_4__models_product__["a" /* Product */](this.product.id, this.count);
+        console.log('-------------->add product to cart');
         console.log(JSON.stringify(product));
         this.cartService.addToCart(product)
             .subscribe(function (res) {
             if (res.state == 1) {
-                _this.productInCart.push(product);
+                if (!_this.productInCart.some(function (p) { return p.productid == product.productid; }))
+                    _this.productInCart.push(product);
             }
         });
     };
@@ -401,54 +488,12 @@ var ProductComponent = (function () {
 
 /***/ }),
 
-/***/ 339:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(100);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(113);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_settings__ = __webpack_require__(154);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-var ProductService = (function () {
-    function ProductService(http) {
-        this.http = http;
-    }
-    ProductService.prototype.getAllProduct = function (id) {
-        return this.http.get(__WEBPACK_IMPORTED_MODULE_3__shared_settings__["a" /* baseUrl */] + "products/" + id)
-            .map(function (res) { return res.json(); });
-    };
-    ProductService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
-    ], ProductService);
-    return ProductService;
-    var _a;
-}());
-//# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/product.service.js.map
-
-/***/ }),
-
 /***/ 340:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__product_product_service__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__product_product_service__ = __webpack_require__(220);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductlistComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -594,10 +639,10 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__navbar_navbar_component__ = __webpack_require__(524);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__productlist_productlist_component__ = __webpack_require__(340);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__routing__ = __webpack_require__(526);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__cart_cart_component__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__orderlist_orderlist_component__ = __webpack_require__(337);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__order_order_component__ = __webpack_require__(335);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__product_product_component__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__cart_cart_component__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__orderlist_orderlist_component__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__order_order_component__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__product_product_component__ = __webpack_require__(339);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -676,8 +721,8 @@ var Address = (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Product; });
 var Product = (function () {
-    function Product(id, count) {
-        this.id = id;
+    function Product(productid, count) {
+        this.productid = productid;
         this.count = count;
     }
     return Product;
@@ -767,7 +812,7 @@ var AddressService = (function () {
     };
     AddressService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
     ], AddressService);
     return AddressService;
     var _a;
@@ -782,10 +827,10 @@ var AddressService = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_router__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__productlist_productlist_component__ = __webpack_require__(340);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_cart_component__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__orderlist_orderlist_component__ = __webpack_require__(337);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__product_product_component__ = __webpack_require__(338);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__order_order_component__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_cart_component__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__orderlist_orderlist_component__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__product_product_component__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__order_order_component__ = __webpack_require__(336);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return routing; });
 
 
@@ -859,7 +904,7 @@ module.exports = ""
 /***/ 689:
 /***/ (function(module, exports) {
 
-module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}"
+module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}\r\n#pictures{\r\n    min-height: 260px; \r\n}"
 
 /***/ }),
 
@@ -880,7 +925,7 @@ module.exports = "<div class=\"container\">\r\n  <app-navbar></app-navbar>\r\n  
 /***/ 693:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"cart-empty margin-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n            <a class=\"col-xs-6 paddinghorizontal\" href=\"productlist/1\">\r\n                <img src=\"http://placehold.it/146x146\" alt>\r\n                <p class=\"font-middle gray\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large bold\">￥15/Kg</p>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info margin-all\" *ngFor=\"let product of products\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥100</p>\r\n        </div>\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">白菜</p>\r\n                <p>￥15/Kg</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥100</p>\r\n        </div>\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">白菜</p>\r\n                <p>￥15/Kg</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥100</p>\r\n        </div>\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">白菜</p>\r\n                <p>￥15/Kg</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥100</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥150</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"cart-empty margin-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" *ngFor=\"let suggestion of suggestions\" href=\"productlist/{{suggestion.id}}\">\r\n                <img src=\"{{suggestion.pictures[0].path}}\" alt>\r\n                <p class=\"font-middle gray\">{{suggestion.name}}</p>\r\n                <p class=\"font-small gray\">{{suggestion.description}}</p>\r\n                <p class=\"font-large bold\">￥{{suggestion.price}}/{{suggestion.unitName}}</p>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info margin-all\" *ngFor=\"let product of products\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥{{product.price*product.count}}</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -894,7 +939,7 @@ module.exports = "<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n  <d
 /***/ 695:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add1\" name=\"address\" type=\"radio\" checked><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <p>\r\n            <input name=\"address\" type=\"radio\">红旗南街XX小区1栋三单元<br> 张三 15510235652\r\n        </p>\r\n        <p>\r\n            <input name=\"address\" type=\"radio\">红旗南街XX小区1栋三单元<br> 张三 15510235652\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">白菜</p>\r\n                <p class=\"name\">￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p>白菜</p>\r\n                <p>￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥150</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
+module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add{{i}}\" name=\"address\" type=\"radio\" checked><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" type=\"submit\" (click)=\"onAddAddress()\" data-target=\"#addaddress\" data-toggle=\"modal\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">白菜</p>\r\n                <p class=\"name\">￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p>白菜</p>\r\n                <p>￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥150</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
 
 /***/ }),
 
@@ -908,14 +953,14 @@ module.exports = "<div class=\"margin-all\">\r\n  <p class=\"center\"><i class=\
 /***/ 697:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li class=\"active\" data-slide-to=\"0\" data-target=\"#pictures\"></li>\r\n            <li data-slide-to=\"0\" data-target=\"#pictures\"></li>\r\n            <li data-slide-to=\"0\" data-target=\"#pictures\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item active\">\r\n                <img class=\"image-responsive\" src=\"http://placehold.it/300x260\" alt=\"pic\" width=\"100%\">\r\n            </div>\r\n            <div class=\"item\">\r\n                <img class=\"image-responsive\" src=\"http://placehold.it/300x260\" alt=\"pic\" width=\"100%\">\r\n            </div>\r\n            <div class=\"item\">\r\n                <img class=\"image-responsive\" src=\"http://placehold.it/300x260\" alt=\"pic\" width=\"100%\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail margin-all\">\r\n        <p class=\"font-middle gray bold\">{{result?.body[0].name}}</p>\r\n        <p class=\"font-small gray\">{{result?.body[0].description}}</p>\r\n        <p class=\"font-large\">￥{{result?.body[0].price}}/{{result?.body[0].unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(value)]=\"count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li data-slide-to=\"i\" *ngFor=\"let picture of product?.pictures;let i=index\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item\" *ngFor=\"let picture of product?.pictures\">\r\n                <img src=\"{{picture.path}}\" alt=\"pic\" class=\"image-responsive\" width=\"100%\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail margin-all\">\r\n        <p class=\"font-middle gray bold\">{{product?.name}}</p>\r\n        <p class=\"font-small gray\">{{product?.description}}</p>\r\n        <p class=\"font-large\">￥{{product?.price}}/{{product?.unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(value)]=\"count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
 /***/ 698:
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <img class=\"image-responsive\" src=\"../../assets/images/banner.png\" alt=\"banner\" width=\"100%\">\r\n</div>\r\n<div class=\"row margin\">\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\" *ngFor=\"let product of result?.body\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">{{product.name}}</p>\r\n                <p class=\"font-small gray\">{{product.description}}</p>\r\n                <p class=\"font-large\">￥{{product.price}}/{{product.unitName}}</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">白菜</p>\r\n                <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜</p>\r\n                <p class=\"font-large\">￥15/Kg</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n</div>"
+module.exports = "<div>\r\n    <img class=\"image-responsive\" src=\"../../assets/images/banner.png\" alt=\"banner\" width=\"100%\">\r\n</div>\r\n<div class=\"row margin\">\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\" *ngFor=\"let product of result?.body.items\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">{{product.name}}</p>\r\n                <p class=\"font-small gray\">{{product.description}}</p>\r\n                <p class=\"font-large\">￥{{product.price}}/{{product.unitName}}</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n</div>"
 
 /***/ }),
 

@@ -85,11 +85,11 @@ namespace Vege.Repositories
 
         public async Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid)
         {
-            var cart = await this.context.ShoppingCarts.FirstOrDefaultAsync();
+            var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
             if (cart != null)
             {
                 var cartItems = from cp in cart.Products
-                                join p in this.context.Products on cp.ProductId equals p.Id
+                                join p in this.context.Products.Include(p => p.Pictures) on cp.ProductId equals p.Id
                                 join u in this.context.Units on p.UnitId equals u.Id
                                 select new CartItemDTO
                                 {
@@ -111,7 +111,7 @@ namespace Vege.Repositories
 
         public async Task<bool> AddCartItem(string openId, CartItem cartItem)
         {
-            var cart = await this.context.ShoppingCarts.FirstOrDefaultAsync();
+            var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
             if (cart == null)
             {
                 ShoppingCart newCart = new ShoppingCart()
@@ -125,7 +125,14 @@ namespace Vege.Repositories
             }
             else
             {
-                cart.Products.Add(cartItem);
+                if (cart.Products.Any(p => p.ProductId == cartItem.ProductId))
+                {
+                    cart.Products.Where(p => p.ProductId == cartItem.ProductId).FirstOrDefault().Count += cartItem.Count;
+                }
+                else
+                {
+                    cart.Products.Add(cartItem);
+                }
                 return (await this.context.SaveChangesAsync()) > 0;
             }
         }
@@ -198,6 +205,33 @@ namespace Vege.Repositories
             else
             {
                 return "";
+            }
+        }
+
+        public async Task<IEnumerable<Address>> GetAllAddress(string openId)
+        {
+            var addresses = this.context.Addresses;
+            if (string.IsNullOrEmpty(openId))
+            {
+                return await addresses.ToListAsync();
+            }
+            else
+            {
+                return await addresses.Where(a => a.UserId == 1).ToListAsync();
+            }
+        }
+
+        public async Task<Address> AddAddress(Address address)
+        {
+            var addr = (await this.context.Addresses.AddAsync(address)).Entity;
+            var succ = await this.context.SaveChangesAsync();
+            if (succ > 0)
+            {
+                return addr;
+            }
+            else
+            {
+                return null;
             }
         }
     }

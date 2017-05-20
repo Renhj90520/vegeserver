@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
-using Vege.DTO;
 using Vege.Repositories;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,56 +11,69 @@ using Vege.Repositories;
 namespace Vege.Controllers
 {
     [Route("api/[controller]")]
-    public class CartsController : Controller
+    public class AddressesController : Controller
     {
         private IVegeRepository vegeRepository;
-        public CartsController(IVegeRepository vegeRepository)
+        public AddressesController(IVegeRepository vegeRepository)
         {
             this.vegeRepository = vegeRepository;
         }
         // GET: api/values
         [HttpGet("{openid?}")]
-        public async Task<IActionResult> GetAllCartProducts(string openid)
+        public async Task<IActionResult> Get(string openid)
         {
-            Result<IEnumerable<CartItemDTO>> result = new Result<IEnumerable<CartItemDTO>>();
+            Result<IEnumerable<Address>> result = new Result<IEnumerable<Address>>();
             try
             {
-                result.Body = await this.vegeRepository.GetAllProductInCart(openid);
+                result.Body = await this.vegeRepository.GetAllAddress(openid);
                 result.State = 1;
             }
             catch (Exception ex)
             {
+                result.Body = null;
                 result.State = 0;
                 result.Message = ex.Message;
-                result.Body = null;
             }
-
             return Ok(result);
         }
 
-        [HttpPost("{openid?}")]
-        public async Task<IActionResult> Post(string openid, [FromBody]CartItem cartItem)
+        // POST api/values
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]Address address)
         {
-            Result<Object> result = new Result<object>();
-
+            Result<Address> result = new Result<Address>();
             try
             {
-                bool succ = await this.vegeRepository.AddCartItem(openid, cartItem);
-                if (succ)
-                {
-                    result.State = 1;
-                }
-                else
+                var addr = await this.vegeRepository.AddAddress(address);
+                if (addr == null)
                 {
                     result.State = 0;
                 }
+                else
+                {
+                    result.State = 1;
+                }
+                result.Body = addr;
             }
             catch (Exception ex)
             {
+                result.Body = null;
                 result.State = 0;
                 result.Message = ex.Message;
             }
             return Ok(result);
+        }
+
+        // PUT api/values/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }

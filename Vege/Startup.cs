@@ -11,6 +11,7 @@ using Vege.Models;
 using Vege.Repositories;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Cors;
 
 namespace Vege
 {
@@ -35,12 +36,14 @@ namespace Vege
             services.AddSingleton(this.Configuration);
             services.AddDbContext<VegeContext>();
             services.AddScoped<IVegeRepository, VegeRepository>();
+            services.AddCors();
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseCors(builder => builder.AllowAnyOrigin());
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             app.UseDeveloperExceptionPage();
