@@ -5,28 +5,29 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
 using Vege.Repositories;
+using Vege.DTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
     [Route("api/[controller]")]
-    public class OrderController : Controller
+    public class OrdersController : Controller
     {
         private IVegeRepository vegeRepository;
-        public OrderController(IVegeRepository vegeRepository)
+        public OrdersController(IVegeRepository vegeRepository)
         {
             this.vegeRepository = vegeRepository;
         }
 
         // GET: api/values
-        [HttpGet("/{openid?}")]
-        public IActionResult GetAllProductsInOrder(string openid,[FromQuery]int? index,[FromQuery]int? perPage)
+        [HttpGet("{openid?}")]
+        public IActionResult GetAllProductsInOrder(string openid, [FromQuery]int? index, [FromQuery]int? perPage)
         {
-            Result<ItemsResult<Order>> result = new Result<ItemsResult<Order>>();
+            Result<ItemsResult<OrderDTO>> result = new Result<ItemsResult<OrderDTO>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllOrders(openid,index,perPage);
+                result.Body = this.vegeRepository.GetAllOrders(openid, index, perPage);
                 result.State = 1;
             }
             catch (Exception ex)
@@ -39,7 +40,7 @@ namespace Vege.Controllers
         }
 
         // POST api/values
-        [HttpPost("/{openid?}")]
+        [HttpPost("{openid?}")]
         public async Task<IActionResult> Post(string opendid, [FromBody]Order order)
         {
             Result<Object> result = new Result<object>();

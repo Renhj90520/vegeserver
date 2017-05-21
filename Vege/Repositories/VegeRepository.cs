@@ -137,22 +137,40 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<Order> GetAllOrders(string openId, int? index, int? perPage)
+        public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage)
         {
-            var orders = this.context.Orders.Include(order => order.Products)
-            .ThenInclude(item => item.Join(this.context.Products, i => i.ProductId, p => p.Id, (ii, pp) => new OrderItemDTO
+            var orders = this.context.Orders.Include(order => order.Products).Join(this.context.Addresses, i => i.AddressId, a => a.Id, (ii, aa) => new OrderDTO
             {
-                CategoryId = pp.CategoryId,
-                Count = ii.Count,
-                Description = pp.Description,
-                Id = pp.Id,
-                Name = pp.Name,
-                Pictures = pp.Pictures,
-                Price = ii.Price,
-                UnitName = pp.UnitName
-            }));
+                Id = ii.Id,
+                Area = aa.Area,
+                CancelTime = ii.CancelTime,
+                City = aa.City,
+                CreateTime = ii.CreateTime,
+                FinishTime = ii.FinishTime,
+                Name = aa.Name,
+                OpenId = ii.OpenId,
+                Phone = aa.Phone,
+                Province = aa.Province,
+                State = ii.State,
+                Street = aa.Street,
+                Products = ii.Products.Join(this.context.Products, op => op.ProductId, p => p.Id, (oop, pp) => new OrderItemDTO
+                {
+                    Id = oop.Id,
+                    CategoryId = pp.CategoryId,
+                    Count = oop.Count,
+                    Description = pp.Description,
+                    Name = pp.Name,
+                    Pictures = pp.Pictures,
+                    Price = oop.Price,
+                    State = pp.State,
+                    Step = pp.Step,
+                    TotalCount = pp.TotalCount,
+                    UnitId = pp.UnitId,
+                    UnitName = pp.UnitName
+                })
+            });
 
-            ItemsResult<Order> result = new ItemsResult<Order>();
+            ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
             result.Count = orders.Count();
             if (index != null)
             {
@@ -162,12 +180,14 @@ namespace Vege.Repositories
             {
                 result.Items = orders;
             }
+
             return result;
         }
 
         public async Task<bool> AddOrder(Order order)
         {
             this.context.Orders.Add(order);
+            this.context.OrderItems.RemoveRange(this.context.OrderItems);
             return (await this.context.SaveChangesAsync()) > 0;
         }
 

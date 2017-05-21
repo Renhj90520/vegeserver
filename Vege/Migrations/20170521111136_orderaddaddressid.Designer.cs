@@ -8,9 +8,10 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170521111136_orderaddaddressid")]
+    partial class orderaddaddressid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -85,7 +86,7 @@ namespace Vege.Migrations
 
                     b.Property<DateTime>("FinishTime");
 
-                    b.Property<string>("OpenId");
+                    b.Property<int>("OpenId");
 
                     b.Property<int>("State");
 

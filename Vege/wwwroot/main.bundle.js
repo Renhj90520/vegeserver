@@ -5,6 +5,7 @@ webpackJsonp([1,5],{
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return baseUrl; });
+// export const baseUrl = "http://localhost:55174/api/";
 var baseUrl = "http://vege.azurewebsites.net/api/";
 //# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/settings.js.map
 
@@ -42,8 +43,6 @@ var CartService = (function () {
         if (openId) {
             url + openId;
         }
-        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Headers */]();
-        headers.set("Content-Type", "application/json");
         return this.http.post(url, product)
             .map(function (res) { return res.json(); });
     };
@@ -57,7 +56,7 @@ var CartService = (function () {
     };
     CartService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
     ], CartService);
     return CartService;
     var _a;
@@ -117,7 +116,7 @@ var ProductService = (function () {
     };
     ProductService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
     ], ProductService);
     return ProductService;
     var _a;
@@ -160,7 +159,6 @@ var CartComponent = (function () {
     CartComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.cartService.getAllInCart().subscribe(function (res) {
-            console.log('-------------->cart ' + JSON.stringify(res));
             _this.message = res.message;
             _this.state = res.state;
             _this.products = res.body || [];
@@ -176,6 +174,7 @@ var CartComponent = (function () {
         });
     };
     CartComponent.prototype.gotoOrder = function () {
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
         this.router.navigate(['order'], { replaceUrl: true });
     };
     CartComponent.prototype.onIncrease = function (product) {
@@ -239,6 +238,7 @@ var OrderComponent = (function () {
         this.cartService = cartService;
         this.addresses = [];
         this.newAddr = new __WEBPACK_IMPORTED_MODULE_5__models_address__["a" /* Address */]();
+        this.totalCost = 0;
     }
     OrderComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -249,22 +249,29 @@ var OrderComponent = (function () {
                 _this.addresses[0].ischecked = true;
             }
         });
-        this.cartService.getAllInCart()
-            .subscribe(function (res) {
-            _this.products = res.body;
-        });
+        // this.cartService.getAllInCart()
+        //   .subscribe(res => {
+        //     this.products = res.body;
+        //   });
+        this.products = JSON.parse(sessionStorage.getItem("cartproducts")) || [];
+        this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
     };
     OrderComponent.prototype.gotoOrders = function () {
         var _this = this;
         var address = this.addresses.filter(function (a) { return a.ischecked; });
         if (address && address.length > 0) {
-            address[0].products = this.products;
-            this.orderService.addOrder(address[0])
+            var order = {
+                createtime: this.getNow(),
+                state: 0, addressId: address[0].id, products: this.products.map(function (p) {
+                    return { productid: p.id, count: p.count, price: p.price };
+                })
+            };
+            this.orderService.addOrder(order, 'openid')
                 .subscribe(function (res) {
                 _this.router.navigate(['orderlist'], { replaceUrl: true });
             }, function (err) {
                 if (err) {
-                    alert(err.message);
+                    alert(err);
                 }
             });
         }
@@ -272,14 +279,40 @@ var OrderComponent = (function () {
             alert('请填选地址');
         }
     };
+    OrderComponent.prototype.getNow = function () {
+        var now = new Date();
+        var month = now.getMonth() < 10 ? '0' + now.getMonth() : now.getMonth();
+        var day = now.getDate() < 10 ? '0' + now.getDate() : now.getDate();
+        var hour = now.getHours() < 10 ? '0' + now.getHours() : now.getHours();
+        var minute = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+        var seconds = now.getSeconds() < 10 ? '0' + now.getSeconds() : now.getSeconds();
+        return now.getFullYear() + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + seconds;
+    };
     OrderComponent.prototype.onAddAddress = function () {
         var _this = this;
         this.addressService.addNewAddress(this.newAddr)
             .subscribe(function (res) {
             if (res.state == 1 && res.body) {
+                _this.addresses.forEach(function (a) { return a.ischecked = false; });
+                res.body.ischecked = true;
                 _this.addresses.push(res.body);
             }
         });
+    };
+    OrderComponent.prototype.onIncrease = function (product) {
+        product.count++;
+        this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+    };
+    OrderComponent.prototype.onDecrease = function (product) {
+        product.count--;
+        if (product.count < 0) {
+            product.count = 0;
+        }
+        this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+    };
+    OrderComponent.prototype.onAddressChange = function (address) {
+        this.addresses.forEach(function (a) { return a.ischecked = false; });
+        address.ischecked = true;
     };
     OrderComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
@@ -324,12 +357,12 @@ var OrderService = (function () {
     function OrderService(http) {
         this.http = http;
     }
-    OrderService.prototype.addOrder = function (address, openId) {
+    OrderService.prototype.addOrder = function (order, openId) {
         var url = __WEBPACK_IMPORTED_MODULE_2__shared_settings__["a" /* baseUrl */] + "orders/";
         if (openId) {
             url + openId;
         }
-        return this.http.post(url, address)
+        return this.http.post(url, order)
             .map(function (res) { return res.json(); });
     };
     OrderService.prototype.getAllOrders = function (openId) {
@@ -342,7 +375,7 @@ var OrderService = (function () {
     };
     OrderService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
     ], OrderService);
     return OrderService;
     var _a;
@@ -377,7 +410,10 @@ var OrderlistComponent = (function () {
         var _this = this;
         this.orderService.getAllOrders()
             .subscribe(function (res) {
-            _this.orders = res.body;
+            _this.orders = res.body.items;
+            _this.orders.forEach(function (order) {
+                order.total = order.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+            });
         });
     };
     OrderlistComponent = __decorate([
@@ -433,18 +469,14 @@ var ProductComponent = (function () {
         var _this = this;
         this.route.params.forEach(function (params) {
             var id = +params['id'];
-            console.log('--------->id is ' + id);
             _this.productService.getAllProduct(id)
                 .subscribe(function (res) {
-                console.log('---------->res.body:' + JSON.stringify(res.body));
                 _this.product = res.body.items[0];
             });
         });
         this.cartService.getAllInCart()
             .subscribe(function (pro) {
             _this.productInCart = pro.body || [];
-            console.log('--------ProductInCart' + JSON
-                .stringify(_this.productInCart));
         });
     };
     ProductComponent.prototype.onCartClick = function () {
@@ -453,8 +485,6 @@ var ProductComponent = (function () {
     ProductComponent.prototype.onAddCart = function () {
         var _this = this;
         var product = new __WEBPACK_IMPORTED_MODULE_4__models_product__["a" /* Product */](this.product.id, this.count);
-        console.log('-------------->add product to cart');
-        console.log(JSON.stringify(product));
         this.cartService.addToCart(product)
             .subscribe(function (res) {
             if (res.state == 1) {
@@ -515,7 +545,6 @@ var ProductlistComponent = (function () {
         this.productService.getAllProduct()
             .subscribe(function (res) {
             _this.result = res;
-            console.log(_this.result);
         });
     };
     ProductlistComponent = __decorate([
@@ -595,7 +624,6 @@ var AppComponent = (function () {
         router.events.subscribe(function (event) {
             if (event instanceof __WEBPACK_IMPORTED_MODULE_1__angular_router__["d" /* NavigationEnd */]) {
                 var title = _this.getTitle(router.routerState, router.routerState.root).join('-');
-                console.log('title', title);
                 titleService.setTitle(title);
             }
         });
@@ -702,8 +730,9 @@ var AppModule = (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Address; });
 var Address = (function () {
-    function Address(userId, street, name, phone) {
+    function Address(id, userId, street, name, phone) {
         this.ischecked = false;
+        this.id = id;
         this.userId = userId;
         this.street = street;
         this.name = name;
@@ -812,7 +841,7 @@ var AddressService = (function () {
     };
     AddressService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Injectable */])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === 'function' && _a) || Object])
     ], AddressService);
     return AddressService;
     var _a;
@@ -939,14 +968,14 @@ module.exports = "<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n  <d
 /***/ 695:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add{{i}}\" name=\"address\" type=\"radio\" checked><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" type=\"submit\" (click)=\"onAddAddress()\" data-target=\"#addaddress\" data-toggle=\"modal\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">白菜</p>\r\n                <p class=\"name\">￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-xs-12 paddingvertical\">\r\n            <div class=\"pic\">\r\n                <img src=\"http://placehold.it/100x100\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p>白菜</p>\r\n                <p>￥15/Kg\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-minus\"></i>\r\n                  </button>\r\n                    <input class=\"form-control inline\" type=\"number\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\">\r\n                  <i class=\"glyphicon glyphicon-plus\"></i>\r\n                  </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥45</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥150</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
+module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add{{i}}\" name=\"address\" type=\"radio\" [(checked)]=\"address.ischecked\" (change)=\"onAddressChange(address)\"><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                    </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                    </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
 
 /***/ }),
 
 /***/ 696:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"margin-all\">\r\n  <p class=\"center\"><i class=\"glyphicon glyphicon-list-alt\"></i>我的订单</p>\r\n  <hr>\r\n  <div class=\"order-list\">\r\n    <div class=\"order-item\" *ngFor=\"let order of orders\">\r\n      <p><span>{{order.id}}</span> <span class=\"right\">完成交易</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"products/{{product.id}}\" *ngFor=\"let product of order\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"{{product.pictures[0].path}}\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">{{product.name}}</p>\r\n            <p class=\"font-small gray\">{{product.description}}</p>\r\n            <p class=\"font-large bold\">￥{{product.price}}/{{product.unitName}}</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"productlist/1\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"http://placehold.it/100x100\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">白菜</p>\r\n            <p class=\"font-small gray\">白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n            <p class=\"font-large bold\">￥15/Kg</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共2件商品 合计￥100</p>\r\n      <p></p>\r\n      <hr>\r\n    </div>\r\n    <div class=\"order-item\">\r\n      <p><span>20170511000002</span> <span>交易取消</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"detail.html\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"http://placehold.it/100x100\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"name\">白菜</p>\r\n            <p class=\"desc\">白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n            <p class=\"price\">￥15/Kg</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"detail.html\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"http://placehold.it/100x100\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"name\">白菜</p>\r\n            <p class=\"desc\">白菜白菜白菜白菜白菜白菜白菜白菜</p>\r\n            <p class=\"price\">￥15/Kg</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共1件商品 合计￥100</p>\r\n      <p>订单取消原因：超出配送范围</p>\r\n    </div>\r\n  </div>\r\n</div>"
+module.exports = "<div class=\"margin-all\">\r\n  <p class=\"center\"><i class=\"glyphicon glyphicon-list-alt\"></i>我的订单</p>\r\n  <hr>\r\n  <div class=\"order-list\">\r\n    <div class=\"order-item\" *ngFor=\"let order of orders\">\r\n      <p><span>{{order.id}}</span> <span class=\"right\">{{order.state|OrderStatePipe}}</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"products/{{product.id}}\" *ngFor=\"let product of order.products\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"{{product.pictures[0].path}}\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">{{product.name}}</p>\r\n            <p class=\"font-middle gray\">数量：{{product.count}}</p>\r\n            <p class=\"font-large bold\">￥{{product.price}}/{{product.unitName}}</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共{{order.products.length}}件商品 合计￥{{order.total}}</p>\r\n      <p></p>\r\n      <hr>\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
