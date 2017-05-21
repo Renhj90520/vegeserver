@@ -191,8 +191,8 @@ var CartComponent = (function () {
     CartComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-cart',
-            template: __webpack_require__(693),
-            styles: [__webpack_require__(685)],
+            template: __webpack_require__(694),
+            styles: [__webpack_require__(686)],
             providers: [__WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */], __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]) === 'function' && _c) || Object])
@@ -317,8 +317,8 @@ var OrderComponent = (function () {
     OrderComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-order',
-            template: __webpack_require__(695),
-            styles: [__webpack_require__(687)],
+            template: __webpack_require__(696),
+            styles: [__webpack_require__(688)],
             providers: [__WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */], __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */], __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */]) === 'function' && _d) || Object])
@@ -419,8 +419,8 @@ var OrderlistComponent = (function () {
     OrderlistComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-orderlist',
-            template: __webpack_require__(696),
-            styles: [__webpack_require__(688)],
+            template: __webpack_require__(697),
+            styles: [__webpack_require__(689)],
             providers: [__WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */]],
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */]) === 'function' && _a) || Object])
@@ -505,8 +505,8 @@ var ProductComponent = (function () {
     ProductComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-product',
-            template: __webpack_require__(697),
-            styles: [__webpack_require__(689)],
+            template: __webpack_require__(698),
+            styles: [__webpack_require__(690)],
             providers: [__WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */], __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */]) === 'function' && _d) || Object])
@@ -550,8 +550,8 @@ var ProductlistComponent = (function () {
     ProductlistComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-productlist',
-            template: __webpack_require__(698),
-            styles: [__webpack_require__(690)],
+            template: __webpack_require__(699),
+            styles: [__webpack_require__(691)],
             providers: [__WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */]) === 'function' && _a) || Object])
@@ -584,7 +584,7 @@ webpackEmptyContext.id = 398;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(490);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(527);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(528);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_app_module__ = __webpack_require__(521);
 
 
@@ -643,8 +643,8 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-root',
-            template: __webpack_require__(692),
-            styles: [__webpack_require__(684)]
+            template: __webpack_require__(693),
+            styles: [__webpack_require__(685)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__["c" /* Title */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__["c" /* Title */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _b) || Object])
     ], AppComponent);
@@ -671,6 +671,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__orderlist_orderlist_component__ = __webpack_require__(338);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__order_order_component__ = __webpack_require__(336);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__product_product_component__ = __webpack_require__(339);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__shared_orderstate_pipe__ = __webpack_require__(527);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -681,6 +682,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -705,7 +707,8 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_8__cart_cart_component__["a" /* CartComponent */],
                 __WEBPACK_IMPORTED_MODULE_9__orderlist_orderlist_component__["a" /* OrderlistComponent */],
                 __WEBPACK_IMPORTED_MODULE_10__order_order_component__["a" /* OrderComponent */],
-                __WEBPACK_IMPORTED_MODULE_11__product_product_component__["a" /* ProductComponent */]
+                __WEBPACK_IMPORTED_MODULE_11__product_product_component__["a" /* ProductComponent */],
+                __WEBPACK_IMPORTED_MODULE_12__shared_orderstate_pipe__["a" /* OrderStatePipe */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -784,8 +787,8 @@ var NavbarComponent = (function () {
     NavbarComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-navbar',
-            template: __webpack_require__(694),
-            styles: [__webpack_require__(686)]
+            template: __webpack_require__(695),
+            styles: [__webpack_require__(687)]
         }), 
         __metadata('design:paramtypes', [])
     ], NavbarComponent);
@@ -883,6 +886,43 @@ var routing = __WEBPACK_IMPORTED_MODULE_0__angular_router__["a" /* RouterModule 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OrderStatePipe; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var OrderStatePipe = (function () {
+    function OrderStatePipe() {
+    }
+    OrderStatePipe.prototype.transform = function (value, pattern) {
+        switch (value) {
+            case 0: return "未联系";
+            case 1: return "派送中";
+            case 2: return "交易取消";
+            case 3: return "交易完成";
+        }
+    };
+    OrderStatePipe = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["t" /* Pipe */])({ name: "orderstate" }), 
+        __metadata('design:paramtypes', [])
+    ], OrderStatePipe);
+    return OrderStatePipe;
+}());
+//# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/orderstate.pipe.js.map
+
+/***/ }),
+
+/***/ 528:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
@@ -895,105 +935,105 @@ var environment = {
 
 /***/ }),
 
-/***/ 684:
-/***/ (function(module, exports) {
-
-module.exports = ""
-
-/***/ }),
-
 /***/ 685:
 /***/ (function(module, exports) {
 
-module.exports = ".cart-info{\r\n    padding-top: 10px;\r\n}\r\n.cart-info h5{\r\n    text-align: center;\r\n}\r\n.item-info{\r\n    margin-left: 105px;\r\n}\r\n.cart-empty>p,.recommandation > p{\r\n    text-align: center;\r\n}\r\n.recommandation p{\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.row{\r\n    margin: 0;\r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 686:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".cart-info{\r\n    padding-top: 10px;\r\n}\r\n.cart-info h5{\r\n    text-align: center;\r\n}\r\n.item-info{\r\n    margin-left: 105px;\r\n}\r\n.cart-empty>p,.recommandation > p{\r\n    text-align: center;\r\n}\r\n.recommandation p{\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.row{\r\n    margin: 0;\r\n}"
 
 /***/ }),
 
 /***/ 687:
 /***/ (function(module, exports) {
 
-module.exports = ".modal{\r\n    padding: 20px;\r\n}\r\n\r\n.item-total{\r\n    font-size: 16px;\r\n    color: red;\r\n}\r\n\r\n.error-label{\r\n    font-size: 14px;\r\n    color: red;\r\n    margin-top: 5px;\r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 688:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".modal{\r\n    padding: 20px;\r\n}\r\n\r\n.item-total{\r\n    font-size: 16px;\r\n    color: red;\r\n}\r\n\r\n.error-label{\r\n    font-size: 14px;\r\n    color: red;\r\n    margin-top: 5px;\r\n}"
 
 /***/ }),
 
 /***/ 689:
 /***/ (function(module, exports) {
 
-module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}\r\n#pictures{\r\n    min-height: 260px; \r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 690:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}\r\n#pictures{\r\n    min-height: 260px; \r\n}"
 
 /***/ }),
 
-/***/ 692:
+/***/ 691:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n  <app-navbar></app-navbar>\r\n  <router-outlet></router-outlet>\r\n</div>"
+module.exports = ""
 
 /***/ }),
 
 /***/ 693:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"cart-empty margin-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" *ngFor=\"let suggestion of suggestions\" href=\"productlist/{{suggestion.id}}\">\r\n                <img src=\"{{suggestion.pictures[0].path}}\" alt>\r\n                <p class=\"font-middle gray\">{{suggestion.name}}</p>\r\n                <p class=\"font-small gray\">{{suggestion.description}}</p>\r\n                <p class=\"font-large bold\">￥{{suggestion.price}}/{{suggestion.unitName}}</p>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info margin-all\" *ngFor=\"let product of products\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥{{product.price*product.count}}</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"container\">\r\n  <app-navbar></app-navbar>\r\n  <router-outlet></router-outlet>\r\n</div>"
 
 /***/ }),
 
 /***/ 694:
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button class=\"navbar-toggle collapsed\" data-target=\"#navbar\" data-toggle=\"collapse\">\r\n          <span class=\"sr-only\">Toggle Navigation</span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">生鲜派送</a>\r\n    </div>\r\n    <div class=\"navbar-collapse collapse\" id=\"navbar\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li routerLinkActive=\"active\"><a routerLink=\"productlist\">商品列表</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"cart\">购物车</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"orderlist\">我的订单</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>"
+module.exports = "<div class=\"cart-empty margin-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" *ngFor=\"let suggestion of suggestions\" href=\"productlist/{{suggestion.id}}\">\r\n                <img src=\"{{suggestion.pictures[0].path}}\" alt>\r\n                <p class=\"font-middle gray\">{{suggestion.name}}</p>\r\n                <p class=\"font-small gray\">{{suggestion.description}}</p>\r\n                <p class=\"font-large bold\">￥{{suggestion.price}}/{{suggestion.unitName}}</p>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info margin-all\" *ngFor=\"let product of products\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥{{product.price*product.count}}</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
 /***/ 695:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add{{i}}\" name=\"address\" type=\"radio\" [(checked)]=\"address.ischecked\" (change)=\"onAddressChange(address)\"><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                    </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                    </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
+module.exports = "<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button class=\"navbar-toggle collapsed\" data-target=\"#navbar\" data-toggle=\"collapse\">\r\n          <span class=\"sr-only\">Toggle Navigation</span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">生鲜派送</a>\r\n    </div>\r\n    <div class=\"navbar-collapse collapse\" id=\"navbar\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li routerLinkActive=\"active\"><a routerLink=\"productlist\">商品列表</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"cart\">购物车</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"orderlist\">我的订单</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>"
 
 /***/ }),
 
 /***/ 696:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"margin-all\">\r\n  <p class=\"center\"><i class=\"glyphicon glyphicon-list-alt\"></i>我的订单</p>\r\n  <hr>\r\n  <div class=\"order-list\">\r\n    <div class=\"order-item\" *ngFor=\"let order of orders\">\r\n      <p><span>{{order.id}}</span> <span class=\"right\">{{order.state|OrderStatePipe}}</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"products/{{product.id}}\" *ngFor=\"let product of order.products\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"{{product.pictures[0].path}}\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">{{product.name}}</p>\r\n            <p class=\"font-middle gray\">数量：{{product.count}}</p>\r\n            <p class=\"font-large bold\">￥{{product.price}}/{{product.unitName}}</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共{{order.products.length}}件商品 合计￥{{order.total}}</p>\r\n      <p></p>\r\n      <hr>\r\n    </div>\r\n  </div>\r\n</div>"
+module.exports = "<div class=\"margin-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <input id=\"add{{i}}\" name=\"address\" type=\"radio\" [(checked)]=\"address.ischecked\" (change)=\"onAddressChange(address)\"><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                    </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                    </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
 
 /***/ }),
 
 /***/ 697:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li data-slide-to=\"i\" *ngFor=\"let picture of product?.pictures;let i=index\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item\" *ngFor=\"let picture of product?.pictures\">\r\n                <img src=\"{{picture.path}}\" alt=\"pic\" class=\"image-responsive\" width=\"100%\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail margin-all\">\r\n        <p class=\"font-middle gray bold\">{{product?.name}}</p>\r\n        <p class=\"font-small gray\">{{product?.description}}</p>\r\n        <p class=\"font-large\">￥{{product?.price}}/{{product?.unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(value)]=\"count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"margin-all\">\r\n  <p class=\"center\"><i class=\"glyphicon glyphicon-list-alt\"></i>我的订单</p>\r\n  <hr>\r\n  <div class=\"order-list\">\r\n    <div class=\"order-item\" *ngFor=\"let order of orders\">\r\n      <p><span>{{order.id}}</span> <span class=\"right\">{{order.state|orderstate}}</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" href=\"products/{{product.id}}\" *ngFor=\"let product of order.products\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"{{product.pictures[0].path}}\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">{{product.name}}</p>\r\n            <p class=\"font-middle gray\">数量：{{product.count}}</p>\r\n            <p class=\"font-large bold\">￥{{product.price}}/{{product.unitName}}</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共{{order.products.length}}件商品 合计￥{{order.total}}</p>\r\n      <p></p>\r\n      <hr>\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
 /***/ 698:
 /***/ (function(module, exports) {
 
+module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li data-slide-to=\"i\" *ngFor=\"let picture of product?.pictures;let i=index\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item\" *ngFor=\"let picture of product?.pictures\">\r\n                <img src=\"{{picture.path}}\" alt=\"pic\" class=\"image-responsive\" width=\"100%\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail margin-all\">\r\n        <p class=\"font-middle gray bold\">{{product?.name}}</p>\r\n        <p class=\"font-small gray\">{{product?.description}}</p>\r\n        <p class=\"font-large\">￥{{product?.price}}/{{product?.unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(value)]=\"count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
+
+/***/ }),
+
+/***/ 699:
+/***/ (function(module, exports) {
+
 module.exports = "<div>\r\n    <img class=\"image-responsive\" src=\"../../assets/images/banner.png\" alt=\"banner\" width=\"100%\">\r\n</div>\r\n<div class=\"row margin\">\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" href=\"productlist/1\" *ngFor=\"let product of result?.body.items\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">{{product.name}}</p>\r\n                <p class=\"font-small gray\">{{product.description}}</p>\r\n                <p class=\"font-large\">￥{{product.price}}/{{product.unitName}}</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n</div>"
 
 /***/ }),
 
-/***/ 719:
+/***/ 720:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(399);
@@ -1001,5 +1041,5 @@ module.exports = __webpack_require__(399);
 
 /***/ })
 
-},[719]);
+},[720]);
 //# sourceMappingURL=main.bundle.map

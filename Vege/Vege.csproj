@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\uploads\**" />
+    <Content Remove="wwwroot\uploads\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\**" />
+    <None Remove="wwwroot\uploads\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
@@ -23,10 +30,10 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\uploads\" />
-  </ItemGroup>
    <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
   </ItemGroup>
+   <ItemGroup>
+     <Folder Include="wwwroot\upload\" />
+   </ItemGroup>
 </Project>
