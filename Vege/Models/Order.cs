@@ -19,5 +19,6 @@ namespace Vege.Models
         public int State { get; set; }
         public ICollection<OrderItem> Products { get; set; }
         public int AddressId { get; set; }
+        public string CancelReason { get; set; }
     }
 }
