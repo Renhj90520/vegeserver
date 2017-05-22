@@ -25,7 +25,9 @@ namespace Vege.Controllers
             Result<Category> result = new Result<Category>();
             try
             {
-                if (await this.vegeRepository.AddCategory(category))
+                var newCate = await this.vegeRepository.AddCategory(category);
+                result.Body = newCate;
+                if (newCate != null)
                 {
                     result.State = 1;
                 }
@@ -44,18 +46,19 @@ namespace Vege.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories(){
-            Result<IEnumerable<Category>> result=new Result<IEnumerable<Category>>();
+        public async Task<IActionResult> GetAllCategories()
+        {
+            Result<IEnumerable<Category>> result = new Result<IEnumerable<Category>>();
             try
             {
-                result.Body=await this.vegeRepository.GetAllCategories();
-                result.State=1;
+                result.Body = await this.vegeRepository.GetAllCategories();
+                result.State = 1;
             }
             catch (Exception ex)
             {
-                result.Body=null;
-                result.State=0;
-                result.Message=ex.Message;
+                result.Body = null;
+                result.State = 0;
+                result.Message = ex.Message;
             }
             return Ok(result);
         }

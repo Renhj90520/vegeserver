@@ -16,11 +16,17 @@ namespace Vege.Repositories
             this.context = context;
         }
 
-        public async Task<bool> AddCategory(Category category)
+        public async Task<Category> AddCategory(Category category)
         {
-            this.context.Categories.Add(category);
-
-            return (await this.context.SaveChangesAsync()) > 0;
+            var newCate = this.context.Categories.Add(category).Entity;
+            if ((await this.context.SaveChangesAsync()) > 0)
+            {
+                return newCate;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<Product> AddProduct(Product product)
@@ -168,7 +174,7 @@ namespace Vege.Repositories
                     UnitId = pp.UnitId,
                     UnitName = pp.UnitName
                 })
-            });
+            }).OrderBy(o=>o.State).ThenByDescending(o=>o.Id);
 
             ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
             result.Count = orders.Count();
@@ -187,7 +193,7 @@ namespace Vege.Repositories
         public async Task<bool> AddOrder(Order order)
         {
             this.context.Orders.Add(order);
-            this.context.OrderItems.RemoveRange(this.context.OrderItems);
+            this.context.CartItems.RemoveRange(this.context.CartItems);
             return (await this.context.SaveChangesAsync()) > 0;
         }
 

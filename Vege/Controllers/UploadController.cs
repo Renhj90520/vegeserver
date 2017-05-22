@@ -25,16 +25,16 @@ namespace Vege.Controllers
         }
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post(IFormFile file)
+        public async Task<IActionResult> Post(IFormFile upload)
         {
-            long size = file.Length;
-            var fileName = file.FileName;
+            long size = upload.Length;
+            var fileName = upload.FileName;
             var extension = fileName.Substring(fileName.LastIndexOf('.'));
             string path = @"upload/" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
             var filePath = Path.Combine(this.env.WebRootPath, "upload", DateTime.Now.ToString("yyyyMMddHHmmss") + extension);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(stream);
+                await upload.CopyToAsync(stream);
             }
 
             var picture = await this.vegeRepository.AddPicture(path);

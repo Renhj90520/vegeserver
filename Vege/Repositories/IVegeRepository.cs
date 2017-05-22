@@ -11,7 +11,7 @@ namespace Vege.Repositories
     {
         ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage);
         Task<Product> AddProduct(Product product);
-        Task<bool> AddCategory(Category category);
+        Task<Category> AddCategory(Category category);
         Task<IEnumerable<Category>> GetAllCategories();
         Task<bool> AddUnit(Unit unit);
         Task<IEnumerable<Unit>> GetAllUnits();
