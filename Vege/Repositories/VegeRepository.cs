@@ -143,7 +143,7 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage)
+        public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, DateTime? begin, DateTime? end, bool? noshowRemove)
         {
             var orders = this.context.Orders.Include(order => order.Products).Join(this.context.Addresses, i => i.AddressId, a => a.Id, (ii, aa) => new OrderDTO
             {
@@ -174,8 +174,27 @@ namespace Vege.Repositories
                     UnitId = pp.UnitId,
                     UnitName = pp.UnitName
                 })
-            }).OrderBy(o=>o.State).ThenByDescending(o=>o.Id);
-
+            });
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                orders = orders.Where(o => (o.Name == keyword || o.Phone == keyword));
+            }
+            if (begin != null)
+            {
+                orders = orders.Where(o => o.CreateTime.CompareTo(begin.Value) >= 0);
+            }
+            if (end != null)
+            {
+                orders = orders.Where(o => o.CreateTime.CompareTo(end.Value) <= 0);
+            }
+            if (noshowRemove != null)
+            {
+                if (noshowRemove.Value)
+                {
+                    orders = orders.Where(o => o.State != 4);
+                }
+            }
+            orders.OrderBy(o => o.State).ThenByDescending(o => o.Id);
             ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
             result.Count = orders.Count();
             if (index != null)
@@ -259,6 +278,23 @@ namespace Vege.Repositories
             {
                 return null;
             }
+        }
+
+        public async Task<bool> UpdateOrder(Order order)
+        {
+            this.context.Orders.Update(this.context.Orders.Attach(order).Entity);
+            return (await this.context.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<bool> RemoveOrder(int id)
+        {
+            Order order = await this.context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                order.State = 4;
+            }
+            this.context.Orders.Update(this.context.Orders.Attach(order).Entity);
+            return (await this.context.SaveChangesAsync()) > 0;
         }
     }
 }

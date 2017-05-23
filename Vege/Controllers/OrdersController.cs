@@ -22,12 +22,12 @@ namespace Vege.Controllers
 
         // GET: api/values
         [HttpGet("{openid?}")]
-        public IActionResult GetAllProductsInOrder(string openid, [FromQuery]int? index, [FromQuery]int? perPage)
+        public IActionResult GetAllProductsInOrder(string openid, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery]string keyword, [FromQuery]DateTime? begin, [FromQuery]DateTime? end, [FromQuery]Boolean? noshowRemove)
         {
             Result<ItemsResult<OrderDTO>> result = new Result<ItemsResult<OrderDTO>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllOrders(openid, index, perPage);
+                result.Body = this.vegeRepository.GetAllOrders(openid, index, perPage, keyword, begin, end, noshowRemove);
                 result.State = 1;
             }
             catch (Exception ex)
@@ -62,6 +62,55 @@ namespace Vege.Controllers
                 result.Message = ex.Message;
             }
             return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrder([FromBody]Order order)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var succ = await this.vegeRepository.UpdateOrder(order);
+                if (succ)
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var succ = await this.vegeRepository.RemoveOrder(id);
+                if (succ)
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+
         }
     }
 }

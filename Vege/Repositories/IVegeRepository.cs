@@ -17,8 +17,10 @@ namespace Vege.Repositories
         Task<IEnumerable<Unit>> GetAllUnits();
         Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
         Task<bool> AddCartItem(string openId, CartItem cartItem);
-        ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage);
+        ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, DateTime? begin, DateTime? end, bool? noshowRemove);
         Task<bool> AddOrder(Order order);
+        Task<bool> UpdateOrder(Order order);
+        Task<bool> RemoveOrder(int id);
         Task<bool> DeleteUnit(int id);
         Task<string> GetFilePath(int id);
         Task<Picture> AddPicture(string path);

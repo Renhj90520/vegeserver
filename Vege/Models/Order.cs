@@ -14,7 +14,7 @@ namespace Vege.Models
         public DateTime CancelTime { get; set; }
         public DateTime FinishTime { get; set; }
         /// <summary>
-        /// 0:未联系,1:派送中,2:Cancel,3:交易完成
+        /// 0:未联系,1:派送中,2:Cancel,3:交易完成,4:删除
         /// </summary>
         public int State { get; set; }
         public ICollection<OrderItem> Products { get; set; }
