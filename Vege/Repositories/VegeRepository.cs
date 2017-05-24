@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -280,20 +282,41 @@ namespace Vege.Repositories
             }
         }
 
-        public async Task<bool> UpdateOrder(Order order)
+        public async Task<bool> UpdateOrder(int id, JsonPatchDocument<Order> patchDoc)
         {
-            this.context.Orders.Update(this.context.Orders.Attach(order).Entity);
+            var order = await this.context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return false;
+            }
+
+            //var orderToPatch = new Order
+            //{
+            //    AddressId = order.AddressId,
+            //    CancelReason = order.CancelReason,
+            //    CancelTime = order.CancelTime,
+            //    CreateTime = order.CreateTime,
+            //    FinishTime = order.FinishTime,
+            //    OpenId = order.OpenId,
+            //    Products = order.Products,
+            //    State = order.State
+            //};
+
+            patchDoc.ApplyTo(order);
             return (await this.context.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> RemoveOrder(int id)
         {
             Order order = await this.context.Orders.FindAsync(id);
-            if (order != null)
+            if (order == null)
             {
-                order.State = 4;
+                return false;
             }
-            this.context.Orders.Update(this.context.Orders.Attach(order).Entity);
+            JsonPatchDocument<Order> orderPatch = new JsonPatchDocument<Order>();
+            var oper = new Operation<Order>() { op = "replace", path = "/state", value = "4" };
+            orderPatch.Operations.Add(oper);
+            orderPatch.ApplyTo(order);
             return (await this.context.SaveChangesAsync()) > 0;
         }
     }

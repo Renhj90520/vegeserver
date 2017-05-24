@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
 using Vege.Repositories;
 using Vege.DTO;
+using Microsoft.AspNetCore.JsonPatch;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -64,13 +65,13 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateOrder([FromBody]Order order)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody]JsonPatchDocument<Order> patchDoc)
         {
             Result<bool> result = new Result<bool>();
             try
             {
-                var succ = await this.vegeRepository.UpdateOrder(order);
+                var succ = await this.vegeRepository.UpdateOrder(id, patchDoc);
                 if (succ)
                 {
                     result.State = 1;
