@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Vege.Repositories;
 using Vege.Models;
 using Vege.DTO;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,9 +17,12 @@ namespace Vege.Controllers
     public class ProductsController : Controller
     {
         private IVegeRepository vegeRepository;
-        public ProductsController(IVegeRepository vegeRepository)
+        private IHostingEnvironment env;
+
+        public ProductsController(IVegeRepository vegeRepository, IHostingEnvironment env)
         {
             this.vegeRepository = vegeRepository;
+            this.env = env;
         }
         [HttpGet("{id?}")]
         public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage)
@@ -61,5 +66,35 @@ namespace Vege.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("pictures/{picpath}")]
+        public async Task<IActionResult> RemovePic(string picpath)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var succ = await this.vegeRepository.RemoveProductPic(picpath);
+                if (succ)
+                {
+                    var fullPath = Path.Combine(this.env.WebRootPath, "upload", picpath);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
+
     }
 }

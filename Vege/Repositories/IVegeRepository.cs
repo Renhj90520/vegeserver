@@ -27,5 +27,7 @@ namespace Vege.Repositories
         Task<Picture> AddPicture(string path);
         Task<IEnumerable<Address>> GetAllAddress(string openId);
         Task<Address> AddAddress(Address address);
+        Task<bool> RemoveProductPic(string picPath);
+        Task<bool> RemoveCategoryPic(int categoryid);
     }
 }

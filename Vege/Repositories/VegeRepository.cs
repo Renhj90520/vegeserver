@@ -319,5 +319,36 @@ namespace Vege.Repositories
             orderPatch.ApplyTo(order);
             return (await this.context.SaveChangesAsync()) > 0;
         }
+
+        public async Task<bool> RemoveProductPic(string picpath)
+        {
+            var pic = await this.context.Pictures.FirstOrDefaultAsync(p => p.Path.Contains(picpath));
+            if (pic != null)
+            {
+                this.context.Pictures.Remove(pic);
+                return (await this.context.SaveChangesAsync() > 0);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<bool> RemoveCategoryPic(int categoryid)
+        {
+            var category = await this.context.Categories.FindAsync(categoryid);
+            if (category != null)
+            {
+                JsonPatchDocument<Category> jsonPatchDoc = new JsonPatchDocument<Category>();
+                var oper = new Operation<Category> { op = "replace", path = "iconPath", value = "" };
+                jsonPatchDoc.Operations.Add(oper);
+                jsonPatchDoc.ApplyTo(category);
+                return (await this.context.SaveChangesAsync() > 0);
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }
