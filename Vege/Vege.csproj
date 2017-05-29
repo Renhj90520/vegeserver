@@ -10,6 +10,10 @@
     <EmbeddedResource Remove="wwwroot\uploads\**" />
     <None Remove="wwwroot\uploads\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot/upload\20170522221751.png" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
@@ -34,6 +38,7 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
   </ItemGroup>
    <ItemGroup>
+     <Folder Include="wwwroot\upload\" />
      <Folder Include="wwwroot\upload\" />
    </ItemGroup>
 </Project>

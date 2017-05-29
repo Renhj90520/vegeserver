@@ -96,5 +96,24 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody]Product newProduct)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.UpdateProduct(newProduct))
+                {
+                    result.State = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
+
     }
 }

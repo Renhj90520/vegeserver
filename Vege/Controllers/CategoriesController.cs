@@ -96,5 +96,54 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var fullpath = await this.vegeRepository.RemoveCategory(id);
+                if (!string.IsNullOrEmpty(fullpath))
+                {
+                    var path = fullpath.Substring(fullpath.LastIndexOf('/'));
+                    var p = Path.Combine(this.env.WebRootPath, "upload", path);
+                    if (System.IO.File.Exists(p))
+                    {
+                        System.IO.File.Delete(p);
+                    }
+                }
+                result.State = 1;
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCate(int id, [FromBody]Category cate)
+        {
+            Result<bool> result = new Result<bool>();
+
+            try
+            {
+                if (await this.vegeRepository.UpdateCate(cate))
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
     }
 }

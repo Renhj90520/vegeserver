@@ -41,11 +41,17 @@ namespace Vege.Repositories
             return null;
         }
 
-        public async Task<bool> AddUnit(Unit unit)
+        public async Task<Unit> AddUnit(Unit unit)
         {
-            this.context.Units.Add(unit);
-
-            return (await this.context.SaveChangesAsync()) > 0;
+            var un = this.context.Units.Add(unit);
+            if ((await this.context.SaveChangesAsync()) > 0)
+            {
+                return un.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage)
@@ -62,30 +68,33 @@ namespace Vege.Repositories
                 products = products.Where(p => p.Id == id);
             }
 
-            var items = (from p in products
-                         join u in this.context.Units on p.UnitId equals u.Id into pus
-                         from pu in pus.DefaultIfEmpty()
-                         select new Product()
-                         {
-                             Id = p.Id,
-                             Name = p.Name,
-                             CategoryId = p.CategoryId,
-                             Description = p.Description,
-                             Pictures = p.Pictures,
-                             Price = p.Price,
-                             TotalCount = p.TotalCount,
-                             UnitName = pu.Name
-                         });
+            //var items = (from p in products
+            //             join u in this.context.Units on p.UnitId equals u.Id into pus
+            //             from pu in pus.DefaultIfEmpty()
+            //             select new Product()
+            //             {
+            //                 Id = p.Id,
+            //                 Name = p.Name,
+            //                 CategoryId = p.CategoryId,
+            //                 Description = p.Description,
+            //                 Pictures = p.Pictures,
+            //                 Price = p.Price,
+            //                 TotalCount = p.TotalCount,
+            //                 UnitId = p.UnitId,
+            //                 UnitName = pu.Name,
+            //                 Step = p.Step,
+            //                 State = p.State
+            //             });
 
             var result = new ItemsResult<Product>();
-            result.Count = items.Count();
+            result.Count = products.Count();
             if (index != null)
             {
-                result.Items = items.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
+                result.Items = products.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
             }
             else
             {
-                result.Items = items;
+                result.Items = products;
             }
 
             return result;
@@ -179,7 +188,7 @@ namespace Vege.Repositories
             });
             if (!string.IsNullOrEmpty(keyword))
             {
-                orders = orders.Where(o => (o.Name == keyword || o.Phone == keyword));
+                orders = orders.Where(o => (o.Name.Contains(keyword) || o.Phone.Contains(keyword)));
             }
             if (begin != null)
             {
@@ -187,7 +196,7 @@ namespace Vege.Repositories
             }
             if (end != null)
             {
-                orders = orders.Where(o => o.CreateTime.CompareTo(end.Value) <= 0);
+                orders = orders.Where(o => o.CreateTime.CompareTo(end.Value.AddDays(1).AddSeconds(-1)) <= 0);
             }
             if (noshowRemove != null)
             {
@@ -196,7 +205,7 @@ namespace Vege.Repositories
                     orders = orders.Where(o => o.State != 4);
                 }
             }
-            orders.OrderBy(o => o.State).ThenByDescending(o => o.Id);
+            orders = orders.OrderBy(o => o.State).ThenByDescending(o => o.Id);
             ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
             result.Count = orders.Count();
             if (index != null)
@@ -349,6 +358,51 @@ namespace Vege.Repositories
             {
                 return true;
             }
+        }
+        public async Task<string> RemoveCategory(int id)
+        {
+            var cate = await this.context.FindAsync<Category>(id);
+            if (cate != null)
+            {
+                this.context.Categories.Remove(cate);
+                if (await this.context.SaveChangesAsync() > 0)
+                {
+                    return cate.IconPath;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateProduct(Product newProduct)
+        {
+            this.context.Products.Update(newProduct);
+
+            return (await this.context.SaveChangesAsync() > 0);
+        }
+
+        public async Task<bool> DeleteAddr(int id)
+        {
+            var addr = await this.context.Addresses.FindAsync(id);
+            if (addr != null)
+            {
+                this.context.Addresses.Remove(addr);
+
+                return (await this.context.SaveChangesAsync() > 0);
+            }
+            return true;
+        }
+
+        public async Task<bool> UpdateCate(Category cate)
+        {
+            this.context.Categories.Update(cate);
+            return (await this.context.SaveChangesAsync() > 0);
         }
     }
 }

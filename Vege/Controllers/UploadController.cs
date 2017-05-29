@@ -54,5 +54,35 @@ namespace Vege.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("clean")]
+        public IActionResult CleanPictures()
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var folder = Path.Combine(this.env.WebRootPath, "upload");
+                if (Directory.Exists(folder))
+                {
+                    var files = Directory.GetFiles(folder);
+                    if (files != null && files.Count() > 0)
+                    {
+                        foreach (var file in files)
+                        {
+                            System.IO.File.Delete(file);
+                        }
+                    }
+                }
+                result.State = 1;
+                result.Body = true;
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+
+            return Ok(result);
+        }
     }
 }

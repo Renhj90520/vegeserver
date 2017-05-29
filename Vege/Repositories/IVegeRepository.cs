@@ -14,7 +14,7 @@ namespace Vege.Repositories
         Task<Product> AddProduct(Product product);
         Task<Category> AddCategory(Category category);
         Task<IEnumerable<Category>> GetAllCategories();
-        Task<bool> AddUnit(Unit unit);
+        Task<Unit> AddUnit(Unit unit);
         Task<IEnumerable<Unit>> GetAllUnits();
         Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
         Task<bool> AddCartItem(string openId, CartItem cartItem);
@@ -29,5 +29,9 @@ namespace Vege.Repositories
         Task<Address> AddAddress(Address address);
         Task<bool> RemoveProductPic(string picPath);
         Task<bool> RemoveCategoryPic(int categoryid);
+        Task<string> RemoveCategory(int id);
+        Task<bool> UpdateProduct(Product newProduct);
+        Task<bool> DeleteAddr(int id);
+        Task<bool> UpdateCate(Category cate);
     }
 }

@@ -72,8 +72,26 @@ namespace Vege.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.DeleteAddr(id))
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
         }
     }
 }

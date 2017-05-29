@@ -26,8 +26,10 @@ namespace Vege.Controllers
             Result<Unit> result = new Result<Unit>();
             try
             {
-                if (await this.vegeRepository.AddUnit(unit))
+                var un = await this.vegeRepository.AddUnit(unit);
+                if (un != null)
                 {
+                    result.Body = un;
                     result.State = 1;
                 }
                 else
