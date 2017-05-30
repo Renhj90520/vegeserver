@@ -18,7 +18,7 @@ var baseUrl = "http://vege.azurewebsites.net/api/";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_settings__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CartService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -71,7 +71,7 @@ var CartService = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_settings__ = __webpack_require__(108);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductService; });
@@ -130,7 +130,7 @@ var ProductService = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_service__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__product_product_service__ = __webpack_require__(220);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CartComponent; });
@@ -157,21 +157,30 @@ var CartComponent = (function () {
         this.totalCost = 0;
     }
     CartComponent.prototype.ngOnInit = function () {
+        // this.cartService.getAllInCart().subscribe(res => {
+        //   this.message = res.message;
+        //   this.state = res.state;
+        //   this.products = res.body || [];
+        //   if (this.products.length <= 0) {
+        //     this.productService.getAllProduct(null, 1, 10, null)
+        //       .subscribe(res => {
+        //         this.suggestions = res.body.items || [];
+        //       })
+        //   } else {
+        //     this.totalCost = this.products.map(p => p.price * p.count).reduce((x, y) => x + y);
+        //   }
+        // });
         var _this = this;
-        this.cartService.getAllInCart().subscribe(function (res) {
-            _this.message = res.message;
-            _this.state = res.state;
-            _this.products = res.body || [];
-            if (_this.products.length <= 0) {
-                _this.productService.getAllProduct(null, 1, 10, null)
-                    .subscribe(function (res) {
-                    _this.suggestions = res.body.items || [];
-                });
-            }
-            else {
-                _this.totalCost = _this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
-            }
-        });
+        this.products = JSON.parse(sessionStorage.getItem("cartproducts")) || [];
+        if (this.products.length <= 0) {
+            this.productService.getAllProduct(null, 1, 10, null)
+                .subscribe(function (res) {
+                _this.suggestions = res.body.items || [];
+            });
+        }
+        else {
+            this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+        }
     };
     CartComponent.prototype.gotoOrder = function () {
         sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
@@ -180,6 +189,7 @@ var CartComponent = (function () {
     CartComponent.prototype.onIncrease = function (product) {
         product.count++;
         this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
     };
     CartComponent.prototype.onDecrease = function (product) {
         product.count--;
@@ -187,12 +197,13 @@ var CartComponent = (function () {
             product.count = 0;
         }
         this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
     };
     CartComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-cart',
-            template: __webpack_require__(695),
-            styles: [__webpack_require__(687)],
+            template: __webpack_require__(694),
+            styles: [__webpack_require__(686)],
             providers: [__WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */], __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__cart_service__["a" /* CartService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__product_product_service__["a" /* ProductService */]) === 'function' && _c) || Object])
@@ -209,8 +220,8 @@ var CartComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(105);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__address_service__ = __webpack_require__(525);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__address_service__ = __webpack_require__(524);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__order_service__ = __webpack_require__(337);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_address__ = __webpack_require__(522);
@@ -269,6 +280,7 @@ var OrderComponent = (function () {
             this.orderService.addOrder(order, 'openid')
                 .subscribe(function (res) {
                 _this.router.navigate(['orderlist'], { replaceUrl: true });
+                sessionStorage.removeItem('cartproducts');
             }, function (err) {
                 if (err) {
                     alert(err);
@@ -302,6 +314,7 @@ var OrderComponent = (function () {
     OrderComponent.prototype.onIncrease = function (product) {
         product.count++;
         this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
     };
     OrderComponent.prototype.onDecrease = function (product) {
         product.count--;
@@ -309,6 +322,7 @@ var OrderComponent = (function () {
             product.count = 0;
         }
         this.totalCost = this.products.map(function (p) { return p.price * p.count; }).reduce(function (x, y) { return x + y; });
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.products));
     };
     OrderComponent.prototype.onAddressChange = function (address) {
         this.addresses.forEach(function (a) { return a.ischecked = false; });
@@ -333,8 +347,8 @@ var OrderComponent = (function () {
     OrderComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-order',
-            template: __webpack_require__(697),
-            styles: [__webpack_require__(689)],
+            template: __webpack_require__(696),
+            styles: [__webpack_require__(688)],
             providers: [__WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */], __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */], __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__order_service__["a" /* OrderService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__address_service__["a" /* AddressService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__cart_cart_service__["a" /* CartService */]) === 'function' && _d) || Object])
@@ -353,7 +367,7 @@ var OrderComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_settings__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OrderService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -435,8 +449,8 @@ var OrderlistComponent = (function () {
     OrderlistComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-orderlist',
-            template: __webpack_require__(698),
-            styles: [__webpack_require__(690)],
+            template: __webpack_require__(697),
+            styles: [__webpack_require__(689)],
             providers: [__WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */]],
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__order_order_service__["a" /* OrderService */]) === 'function' && _a) || Object])
@@ -453,10 +467,9 @@ var OrderlistComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__product_service__ = __webpack_require__(220);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__ = __webpack_require__(219);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_product__ = __webpack_require__(523);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -471,7 +484,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var ProductComponent = (function () {
     function ProductComponent(router, route, productService, cartService) {
         this.router = router;
@@ -479,8 +491,8 @@ var ProductComponent = (function () {
         this.productService = productService;
         this.cartService = cartService;
         this.productInCart = [];
-        this.count = 1;
     }
+    // count: number = 1;
     ProductComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.forEach(function (params) {
@@ -489,6 +501,16 @@ var ProductComponent = (function () {
                 .subscribe(function (res) {
                 if (res.state == 1) {
                     _this.product = res.body.items[0];
+                    _this.productInCart = JSON.parse(sessionStorage.getItem("cartproducts")) || [];
+                    var pp = _this.productInCart.find(function (p) { return p.id == _this.product.id; });
+                    if (pp) {
+                        _this.product.count = pp.count;
+                        var index = _this.productInCart.indexOf(pp);
+                        _this.productInCart[index] = _this.product;
+                    }
+                    else {
+                        _this.product.count = 1;
+                    }
                 }
                 else {
                     alert(res.message);
@@ -497,39 +519,45 @@ var ProductComponent = (function () {
                 alert(err);
             });
         });
-        this.cartService.getAllInCart()
-            .subscribe(function (pro) {
-            _this.productInCart = pro.body || [];
-        });
+        // this.cartService.getAllInCart()
+        //   .subscribe(pro => {
+        //     this.productInCart = pro.body || [];
+        //   });
     };
     ProductComponent.prototype.onCartClick = function () {
+        sessionStorage.setItem("cartproducts", JSON.stringify(this.productInCart));
         this.router.navigate(['cart'], { replaceUrl: true });
     };
     ProductComponent.prototype.onAddCart = function () {
-        var _this = this;
-        var product = new __WEBPACK_IMPORTED_MODULE_4__models_product__["a" /* Product */](this.product.id, this.count);
-        this.cartService.addToCart(product)
-            .subscribe(function (res) {
-            if (res.state == 1) {
-                if (!_this.productInCart.some(function (p) { return p.productid == product.productid; }))
-                    _this.productInCart.push(product);
-            }
-        });
+        // this.cartService.addToCart(product)
+        //   .subscribe(res => {
+        //     if (res.state == 1) {
+        //       if (!this.productInCart.some(p => p.productid == product.productid))
+        //         this.productInCart.push(product);
+        //     }
+        //   });
+        var index = this.productInCart.indexOf(this.product);
+        if (index < 0) {
+            this.productInCart.push(this.product);
+        }
+        else {
+            alert('该商品已加入购物车！');
+        }
     };
     ProductComponent.prototype.onIncrease = function () {
-        this.count++;
+        this.product.count += this.product.step;
     };
     ProductComponent.prototype.onDecrease = function () {
-        this.count--;
-        if (this.count < 1) {
-            this.count = 1;
+        this.product.count -= this.product.step;
+        if (this.product.count < this.product.step) {
+            this.product.count = this.product.step;
         }
     };
     ProductComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-product',
-            template: __webpack_require__(699),
-            styles: [__webpack_require__(691)],
+            template: __webpack_require__(698),
+            styles: [__webpack_require__(690)],
             providers: [__WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */], __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */]]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__product_service__["a" /* ProductService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__cart_cart_service__["a" /* CartService */]) === 'function' && _d) || Object])
@@ -547,7 +575,8 @@ var ProductComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__product_product_service__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__category_service__ = __webpack_require__(526);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__category_service__ = __webpack_require__(525);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(79);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProductlistComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -561,21 +590,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ProductlistComponent = (function () {
-    function ProductlistComponent(productService, categoryService) {
+    function ProductlistComponent(router, productService, categoryService) {
+        this.router = router;
         this.productService = productService;
         this.categoryService = categoryService;
+        this.products = [];
         this.categories = [];
+        this.productsIncart = [];
     }
     ProductlistComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.productsIncart = JSON.parse(sessionStorage.getItem("cartproducts")) || [];
         this.categoryService.getAllCategories()
             .subscribe(function (res) {
             if (res.body.length > 0) {
                 _this.categories = res.body;
-                _this.productService.getAllProduct(null, null, null, _this.categories[0])
+                _this.productService.getAllProduct(null, null, null, _this.categories[0].id)
                     .subscribe(function (res) {
-                    _this.result = res;
+                    if (res.state == 1) {
+                        _this.products = res.body.items;
+                        _this.products.forEach(function (p) {
+                            p.count = 0;
+                        });
+                        if (_this.productsIncart.length > 0) {
+                            _this.productsIncart.forEach(function (pc, index) {
+                                var pp = _this.products.find(function (pi) { return pi.id == pc.id; });
+                                if (pp) {
+                                    var pic = _this.productsIncart[index];
+                                    pp.count = pic.count;
+                                    _this.productsIncart[index] = pp;
+                                }
+                            });
+                        }
+                    }
                 });
             }
         });
@@ -585,7 +634,20 @@ var ProductlistComponent = (function () {
         this.productService.getAllProduct(null, null, null, categoryid)
             .subscribe(function (res) {
             if (res.state == 1) {
-                _this.result = res;
+                _this.products = res.body.items;
+                _this.products.forEach(function (p) {
+                    p.count = 0;
+                    if (_this.productsIncart.length > 0) {
+                        _this.productsIncart.forEach(function (pc, index) {
+                            var pp = _this.products.find(function (pi) { return pi.id == pc.id; });
+                            if (pp) {
+                                var pic = _this.productsIncart[index];
+                                pp.count = pic.count;
+                                _this.productsIncart[index] = pp;
+                            }
+                        });
+                    }
+                });
             }
             else {
                 alert(res.message);
@@ -594,17 +656,54 @@ var ProductlistComponent = (function () {
             alert(err);
         });
     };
+    ProductlistComponent.prototype.onDecrease = function (product) {
+        product.count -= product.step;
+        if (product.count < 0) {
+            product.count = 0;
+        }
+        var index = this.productsIncart.indexOf(product);
+        if (product.count == 0) {
+            if (index >= 0) {
+                this.productsIncart.splice(index, 1);
+            }
+        }
+        if (this.productsIncart.length > 0)
+            sessionStorage.setItem('cartproducts', JSON.stringify(this.productsIncart));
+    };
+    ProductlistComponent.prototype.onIncrease = function (product) {
+        product.count += product.step;
+        if (this.productsIncart.indexOf(product) < 0) {
+            this.productsIncart.push(product);
+        }
+        // let pincart = this.productsIncart.find(p => p.id == product.id);
+        // if (pincart) {
+        //   pincart.count += product.count;
+        // } else {
+        //   this.productsIncart.push(product);
+        // }
+        if (this.productsIncart.length > 0)
+            sessionStorage.setItem('cartproducts', JSON.stringify(this.productsIncart));
+    };
+    ProductlistComponent.prototype.gotoOrder = function () {
+        if (this.productsIncart.length > 0) {
+            sessionStorage.setItem('cartproducts', JSON.stringify(this.productsIncart));
+            this.router.navigate(['order'], { replaceUrl: true });
+        }
+        else {
+            alert("未选择任何商品！");
+        }
+    };
     ProductlistComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-productlist',
-            template: __webpack_require__(700),
-            styles: [__webpack_require__(692)],
+            template: __webpack_require__(699),
+            styles: [__webpack_require__(691)],
             providers: [__WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */], __WEBPACK_IMPORTED_MODULE_2__category_service__["a" /* CategoryService */]]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__category_service__["a" /* CategoryService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__category_service__["a" /* CategoryService */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__product_product_service__["a" /* ProductService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__category_service__["a" /* CategoryService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__category_service__["a" /* CategoryService */]) === 'function' && _c) || Object])
     ], ProductlistComponent);
     return ProductlistComponent;
-    var _a, _b;
+    var _a, _b, _c;
 }());
 //# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/productlist.component.js.map
 
@@ -631,7 +730,7 @@ webpackEmptyContext.id = 398;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(490);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(529);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(528);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_app_module__ = __webpack_require__(521);
 
 
@@ -650,8 +749,8 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dyna
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(105);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__ = __webpack_require__(105);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -690,8 +789,8 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-root',
-            template: __webpack_require__(694),
-            styles: [__webpack_require__(686)]
+            template: __webpack_require__(693),
+            styles: [__webpack_require__(685)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__["c" /* Title */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__angular_platform_browser__["c" /* Title */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _b) || Object])
     ], AppComponent);
@@ -706,19 +805,19 @@ var AppComponent = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(105);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(481);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(520);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__navbar_navbar_component__ = __webpack_require__(524);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__navbar_navbar_component__ = __webpack_require__(523);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__productlist_productlist_component__ = __webpack_require__(340);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__routing__ = __webpack_require__(527);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__routing__ = __webpack_require__(526);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__cart_cart_component__ = __webpack_require__(335);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__orderlist_orderlist_component__ = __webpack_require__(338);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__order_order_component__ = __webpack_require__(336);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__product_product_component__ = __webpack_require__(339);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__shared_orderstate_pipe__ = __webpack_require__(528);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__shared_orderstate_pipe__ = __webpack_require__(527);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -798,22 +897,6 @@ var Address = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Product; });
-var Product = (function () {
-    function Product(productid, count) {
-        this.productid = productid;
-        this.count = count;
-    }
-    return Product;
-}());
-//# sourceMappingURL=C:/EDisk/VSCProjects/vege/vege/src/product.js.map
-
-/***/ }),
-
-/***/ 524:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NavbarComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -834,8 +917,8 @@ var NavbarComponent = (function () {
     NavbarComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_6" /* Component */])({
             selector: 'app-navbar',
-            template: __webpack_require__(696),
-            styles: [__webpack_require__(688)]
+            template: __webpack_require__(695),
+            styles: [__webpack_require__(687)]
         }), 
         __metadata('design:paramtypes', [])
     ], NavbarComponent);
@@ -845,14 +928,14 @@ var NavbarComponent = (function () {
 
 /***/ }),
 
-/***/ 525:
+/***/ 524:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_settings__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AddressService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -905,13 +988,13 @@ var AddressService = (function () {
 
 /***/ }),
 
-/***/ 526:
+/***/ 525:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(77);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_settings__ = __webpack_require__(108);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CategoryService; });
@@ -947,11 +1030,11 @@ var CategoryService = (function () {
 
 /***/ }),
 
-/***/ 527:
+/***/ 526:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_router__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_router__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__productlist_productlist_component__ = __webpack_require__(340);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_cart_component__ = __webpack_require__(335);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__orderlist_orderlist_component__ = __webpack_require__(338);
@@ -976,7 +1059,7 @@ var routing = __WEBPACK_IMPORTED_MODULE_0__angular_router__["a" /* RouterModule 
 
 /***/ }),
 
-/***/ 528:
+/***/ 527:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1013,7 +1096,7 @@ var OrderStatePipe = (function () {
 
 /***/ }),
 
-/***/ 529:
+/***/ 528:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1029,105 +1112,105 @@ var environment = {
 
 /***/ }),
 
-/***/ 686:
+/***/ 685:
 /***/ (function(module, exports) {
 
 module.exports = ""
+
+/***/ }),
+
+/***/ 686:
+/***/ (function(module, exports) {
+
+module.exports = ".cart-info{\r\n    padding-top: 10px;\r\n}\r\n.cart-info h5{\r\n    text-align: center;\r\n}\r\n.item-info{\r\n    margin-left: 105px;\r\n}\r\n.cart-empty>p,.recommandation > p{\r\n    text-align: center;\r\n}\r\n.recommandation p{\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.row{\r\n    margin: 0;\r\n}\r\n.suggest-item{\r\n    height: 200px;\r\n    overflow: hidden;\r\n    position: relative;\r\n    margin-bottom: 5px;\r\n}\r\n.suggest-item img{\r\n    width: 100%;\r\n    height: 100px;\r\n}\r\n.suggest-item-info p:nth-child(3){\r\n    position: absolute;\r\n    bottom: 2px;\r\n}\r\n"
 
 /***/ }),
 
 /***/ 687:
 /***/ (function(module, exports) {
 
-module.exports = ".cart-info{\r\n    padding-top: 10px;\r\n}\r\n.cart-info h5{\r\n    text-align: center;\r\n}\r\n.item-info{\r\n    margin-left: 105px;\r\n}\r\n.cart-empty>p,.recommandation > p{\r\n    text-align: center;\r\n}\r\n.recommandation p{\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.row{\r\n    margin: 0;\r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 688:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".modal{\r\n    padding: 20px;\r\n}\r\n\r\n.item-total{\r\n    font-size: 16px;\r\n    color: red;\r\n}\r\n\r\n.error-label{\r\n    font-size: 14px;\r\n    color: red;\r\n    margin-top: 5px;\r\n}"
 
 /***/ }),
 
 /***/ 689:
 /***/ (function(module, exports) {
 
-module.exports = ".modal{\r\n    padding: 20px;\r\n}\r\n\r\n.item-total{\r\n    font-size: 16px;\r\n    color: red;\r\n}\r\n\r\n.error-label{\r\n    font-size: 14px;\r\n    color: red;\r\n    margin-top: 5px;\r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 690:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}\r\n#pictures{\r\n    min-height: 260px; \r\n}\r\n.carousel-inner>.item>img{\r\n    height: 300px;\r\n}"
 
 /***/ }),
 
 /***/ 691:
 /***/ (function(module, exports) {
 
-module.exports = ".fixed{\r\n    position: absolute;\r\n    top: 16px;\r\n    right: 4px;\r\n}\r\n.badge-importabt{\r\n    background-color: #f12f30;\r\n}\r\n#pictures{\r\n    min-height: 260px; \r\n}\r\n.carousel-inner>.item>img{\r\n    height: 300px;\r\n}"
+module.exports = ".categories{\r\n    border: 3px solid white;\r\n    width: 60px;\r\n    height: 60px;\r\n    margin: 0 auto;\r\n}\r\n\r\n.categories + p{\r\n    text-align: center;\r\n}\r\n\r\n.carousel-inner{\r\n    min-height: 200px;\r\n}\r\n.catename{\r\n    color: #0272e2;\r\n    font-weight: bold;\r\n}\r\n.no-product{\r\n    text-align: center;\r\n    color: orange;\r\n}\r\n.btn-pay{\r\n    width: 50px;\r\n    height: 50px;\r\n    background-color: #fe1914;\r\n    border: 1px solid white;\r\n    border-radius: 50%;\r\n    text-align: center;\r\n    padding-top: 10px;\r\n    color: white;\r\n    position: fixed;\r\n    bottom: 20px;\r\n    right: 20px;\r\n    box-shadow: 1px 1px 5px #951a08;\r\n}\r\n.btn-pay .badge{\r\n    background-color: #ff8003;\r\n}"
 
 /***/ }),
 
-/***/ 692:
-/***/ (function(module, exports) {
-
-module.exports = ".categories{\r\n    border: 3px solid white;\r\n    width: 60px;\r\n    height: 60px;\r\n    margin: 0 auto;\r\n}\r\n\r\n.categories + p{\r\n    text-align: center;\r\n}\r\n\r\n.carousel-inner{\r\n    min-height: 200px;\r\n}\r\n.catename{\r\n    color: #0272e2;\r\n    font-weight: bold;\r\n}\r\n.no-product{\r\n    text-align: center;\r\n    color: orange;\r\n}"
-
-/***/ }),
-
-/***/ 694:
+/***/ 693:
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"container\">\r\n  <app-navbar></app-navbar>\r\n  <router-outlet></router-outlet>\r\n</div>"
 
 /***/ }),
 
-/***/ 695:
+/***/ 694:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"cart-empty padding-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" routerLink=\"productlist/{{suggestion.id}}\" *ngFor=\"let suggestion of suggestions\">\r\n                <img class=\"productimg img-responsive\" src=\"{{suggestion.pictures[0].path}}\" alt>\r\n                <p class=\"font-middle gray\">{{suggestion.name}}</p>\r\n                <p class=\"font-small gray\">{{suggestion.description}}</p>\r\n                <p class=\"font-large bold\">￥{{suggestion.price}}/{{suggestion.unitName}}</p>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info padding-all\" *ngFor=\"let product of products\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\">\r\n            <div class=\"float-left\">\r\n                <img class=\"productimg img-responsive\" src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥{{product.price*product.count}}</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"cart-empty padding-all\" *ngIf=\"products!=null&&products.length==0\">\r\n    <p><i class=\"glyphicon glyphicon-shopping-cart\"></i>购物车是空的</p>\r\n    <hr>\r\n    <div class=\"recommandation\">\r\n        <p>为你推荐</p>\r\n        <div class=\"row\">\r\n            <a class=\"col-xs-6 paddinghorizontal\" routerLink=\"/productlist/{{suggestion.id}}\" *ngFor=\"let suggestion of suggestions\">\r\n                <div class=\"suggest-item\">\r\n                    <img class=\"img-responsive\" src=\"{{suggestion.pictures[0].path}}\" alt>\r\n                    <div class=\"suggest-item-info\">\r\n                        <p class=\"font-middle gray\">{{suggestion.name}}</p>\r\n                        <p class=\"font-small gray\" *ngIf=\"suggestion.description.length>30\">{{suggestion.description.substring(0,30)+'...'}}</p>\r\n                        <p class=\"font-small gray\" *ngIf=\"suggestion.description.length<=30\">{{suggestion.description}}</p>\r\n                        <p class=\"font-large bold\">￥{{suggestion.price}}/{{suggestion.unitName}}</p>\r\n                    </div>\r\n                </div>\r\n            </a>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"cart-info padding-all\">\r\n    <h5>选购的商品</h5>\r\n    <hr>\r\n    <div class=\"cart-list\">\r\n        <div class=\"cart-item\" *ngFor=\"let product of products\">\r\n            <div class=\"float-left\">\r\n                <img class=\"productimg img-responsive\" src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"item-info\">\r\n                <p class=\"font-large\">{{product.name}}</p>\r\n                <p>￥{{product.price}}/{{product.unitName}}</p>\r\n                <p>\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                </p>\r\n            </div>\r\n            <p>小计：￥{{product.price*product.count}}</p>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n        <div class=\"col-xs-4 button\" (click)=\"gotoOrder()\">填选地址</div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
-/***/ 696:
+/***/ 695:
 /***/ (function(module, exports) {
 
 module.exports = "<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button class=\"navbar-toggle collapsed\" data-target=\"#navbar\" data-toggle=\"collapse\">\r\n          <span class=\"sr-only\">Toggle Navigation</span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n          <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">生鲜派送</a>\r\n    </div>\r\n    <div class=\"navbar-collapse collapse\" id=\"navbar\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li routerLinkActive=\"active\"><a routerLink=\"productlist\">商品列表</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"cart\">购物车</a></li>\r\n        <li routerLinkActive=\"active\"><a routerLink=\"orderlist\">我的订单</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>"
 
 /***/ }),
 
-/***/ 697:
+/***/ 696:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"padding-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <span><input id=\"add{{i}}\" name=\"address\" type=\"radio\" [(checked)]=\"address.ischecked\" (change)=\"onAddressChange(address)\"><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}</span>\r\n            <span class=\"right\"><i class=\"glyphicon glyphicon-remove\" (click)=\"onAddrRemove(address)\" role=\"button\"></i></span>\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img src=\"{{product.pictures[0].path}}\" class=\"productimg img-responsive\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-minus\"></i>\r\n                    </button>\r\n                    <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                    <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                        <i class=\"glyphicon glyphicon-plus\"></i>\r\n                    </button>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
+module.exports = "<div class=\"padding-all\">\r\n    <div class=\"address-list\">\r\n        <p *ngFor=\"let address of addresses; let i=index\">\r\n            <span><input id=\"add{{i}}\" name=\"address\" type=\"radio\" [(checked)]=\"address.ischecked\" (change)=\"onAddressChange(address)\"><label for=\"add{{i}}\">{{address.street}}</label><br> {{address.name}} {{address.phone}}</span>\r\n            <span class=\"right\"><i class=\"glyphicon glyphicon-remove\" role=\"button\" (click)=\"onAddrRemove(address)\"></i></span>\r\n        </p>\r\n        <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\">新建地址</button>\r\n\r\n        <div class=\"modal fade\" id=\"addaddress\">\r\n            <div class=\"jumbotron\">\r\n                <form method=\"post\" #addrForm=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\">姓名</label>\r\n                        <input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" required #name=\"ngModel\" [(ngModel)]=\"newAddr.name\">\r\n                        <p class=\"error-label\" *ngIf=\"name.touched&&!name.valid\">姓名不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userphone\">电话</label>\r\n                        <input class=\"form-control\" id=\"userphone\" name=\"userphone\" type=\"number\" required #phone=\"ngModel\" [(ngModel)]=\"newAddr.phone\">\r\n                        <p class=\"error-label\" *ngIf=\"phone.touched&&!phone.valid\">电话不能为空</p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <span>新疆省</span><span>昌吉市</span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"userstreet\">详细地址</label>\r\n                        <input class=\"form-control\" id=\"userstreet\" name=\"userstreet\" type=\"textarea\" required #street=\"ngModel\" [(ngModel)]=\"newAddr.street\">\r\n                        <p class=\"error-label\" *ngIf=\"street.touched&&!street.valid\">详细地址不能为空</p>\r\n                    </div>\r\n                    <button class=\"btn btn-primary\" data-target=\"#addaddress\" data-toggle=\"modal\" type=\"submit\" (click)=\"onAddAddress()\" [disabled]=\"!addrForm.valid\">添加</button>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <hr>\r\n    <div class=\"row\">\r\n        <div class=\"col-xs-12 paddingvertical\" *ngFor=\"let product of products\"> \r\n            <div class=\"pic\">\r\n                <img class=\"productimg img-responsive\" src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"name\">{{product.name}}</p>\r\n                <p class=\"name\">￥{{product.price}}/{{product.unitName}}\r\n                    <span class=\"right\">\r\n                        <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                            <i class=\"glyphicon glyphicon-minus\"></i>\r\n                        </button>\r\n                        <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                        <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                            <i class=\"glyphicon glyphicon-plus\"></i>\r\n                        </button>\r\n                    </span>\r\n                </p>\r\n                <p class=\"item-total\">小计：￥{{product.count * product.price}}</p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"operator row\">\r\n    <div class=\"col-xs-8 total\">总计：￥{{totalCost}}</div>\r\n    <div class=\"col-xs-4 button\" (click)=\"gotoOrders()\">确认购买</div>\r\n</div>"
 
 /***/ }),
 
-/***/ 698:
+/***/ 697:
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"padding-all\">\r\n  <p class=\"center\"><i class=\"glyphicon glyphicon-list-alt\"></i>我的订单</p>\r\n  <hr>\r\n  <div class=\"order-list\">\r\n    <div class=\"order-item\" *ngFor=\"let order of orders\">\r\n      <p><span>{{order.id}}</span> <span class=\"right\">{{order.state|orderstate}}</span></p>\r\n      <a class=\"col-xs-12 paddingvertical\" routerLink=\"/productlist/{{product.id}}\" *ngFor=\"let product of order.products\">\r\n        <div class=\"clear\">\r\n          <div class=\"pic\">\r\n            <img src=\"{{product.pictures[0].path}}\" class=\"productimg img-responsive\" alt>\r\n          </div>\r\n          <div class=\"info\">\r\n            <p class=\"font-middle gray\">{{product.name}}</p>\r\n            <p class=\"font-middle gray\">数量：{{product.count}}</p>\r\n            <p class=\"font-large bold\">￥{{product.price}}/{{product.unitName}}</p>\r\n          </div>\r\n        </div>\r\n      </a>\r\n      <p>共{{order.products.length}}件商品 合计￥{{order.total}}</p>\r\n      <p></p>\r\n      <hr>\r\n    </div>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
+/***/ 698:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\" *ngIf=\"product?.pictures.length>0\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li data-target=\"#pictures\" [attr.data-slide-to]=\"i\" [class.active]=\"i==0\" *ngFor=\"let picture of product?.pictures;let i = index;\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item\" *ngFor=\"let picture of product?.pictures;let i=index;\" [class.active]=\"i==0\">\r\n                <img class=\"img-responsive\" src=\"{{picture.path}}\" width=\"100%\" height=\"300px \" alt=\"pic\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail padding-all\" *ngIf=\"product\">\r\n        <p class=\"font-middle gray bold\">{{product?.name}}</p>\r\n        <p class=\"font-small gray\">{{product?.description}}</p>\r\n        <p class=\"font-large\">￥{{product?.price}}/{{product?.unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(ngModel)]=\"product.count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
+
+/***/ }),
+
 /***/ 699:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"carousel slide\" id=\"pictures\" date-ride=\"carousel\" *ngIf=\"product?.pictures.length>0\">\r\n        <ol class=\"carousel-indicators\">\r\n            <li data-target=\"#pictures\" [attr.data-slide-to]=\"i\" [class.active]=\"i==0\" *ngFor=\"let picture of product?.pictures;let i = index;\"></li>\r\n        </ol>\r\n        <div class=\"carousel-inner\" role=\"listbox\">\r\n            <div class=\"item\" *ngFor=\"let picture of product?.pictures;let i=index;\" [class.active]=\"i==0\">\r\n                <img class=\"img-responsive\" src=\"{{picture.path}}\" width=\"100%\" height=\"300px \" alt=\"pic\">\r\n            </div>\r\n        </div>\r\n        <a class=\"left carousel-control\" data-slide=\"prev\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Previous</span>\r\n        </a>\r\n        <a class=\"right carousel-control\" data-slide=\"next\" href=\"#pictures\" role=\"button\">\r\n            <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r\n            <span class=\"sr-only\">Next</span>\r\n        </a>\r\n    </div>\r\n    <div class=\"infodetail padding-all\">\r\n        <p class=\"font-middle gray bold\">{{product?.name}}</p>\r\n        <p class=\"font-small gray\">{{product?.description}}</p>\r\n        <p class=\"font-large\">￥{{product?.price}}/{{product?.unitName}}</p>\r\n        <div>\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease()\">\r\n                <i class=\"glyphicon glyphicon-minus\">\r\n                </i>\r\n            </button>\r\n            <input class=\"form-control inline\" type=\"number\" min=\"1\" [(value)]=\"count\">\r\n            <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease()\">\r\n            <i class=\"glyphicon glyphicon-plus\"></i>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <div class=\"operator row\">\r\n        <div class=\"col-xs-3 icon\">\r\n            <p class=\"glyphicon glyphicon-heart-empty\"></p>\r\n            <p>关注</p>\r\n        </div>\r\n        <div class=\"col-xs-3 icon\" (click)=\"onCartClick()\">\r\n            <p class=\"glyphicon glyphicon-shopping-cart\"></p>\r\n            <p>购物车</p>\r\n            <span class=\"badge badge-importabt fixed\">{{productInCart.length}}</span>\r\n        </div>\r\n        <div class=\"col-xs-6 button\" (click)=\"onAddCart()\">加入购物车</div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"visible-sm visible-xs\">\r\n    <img class=\"image-responsive\" src=\"../../assets/images/banner.png\" alt=\"banner\" width=\"100%\">\r\n</div>\r\n<div class=\"row\">\r\n    <div class=\"col-xs-3\" *ngFor=\"let category of categories\">\r\n        <img class=\"categories img-responsive\" src=\"{{category.iconPath}}\" alt=\"icon\" role=\"button\" (click)=\"onCategoryClick(category.id)\">\r\n        <p class=\"catename\">{{category.name}}</p>\r\n        <!--<img src=\"http://placehold.it/60x60\" class=\"categories\" alt=\"icon\" role=\"button\" (click)=\"onCategoryClick(category.id)\">-->\r\n    </div>\r\n</div>\r\n<div class=\"row margin\">\r\n    <div class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical clear\" *ngFor=\"let product of products\">\r\n        <div class=\"pic\">\r\n            <a routerLink=\"/productlist/{{product.id}}\">\r\n                <img class=\"productimg img-responsive\" src=\"{{product.pictures[0].path}}\" alt>\r\n            </a>\r\n        </div>\r\n        <div class=\"info\">\r\n            <a routerLink=\"/productlist/{{product.id}}\">\r\n                <p class=\"font-middle gray bold\">{{product.name}}</p>\r\n                <!--<p class=\"font-small gray\" *ngIf=\"product.description.length>=40\">{{product.description.substring(0,40)+'...'}}</p>\r\n                <p class=\"font-small gray\" *ngIf=\"product.description.length<40\">{{product.description}}</p>-->\r\n                <p class=\"font-large\">￥{{product.price}}/{{product.unitName}}</p>\r\n            </a>\r\n            <p>\r\n                <button class=\"btn btn-primary btn-xs\" (click)=\"onDecrease(product)\">\r\n                    <i class=\"glyphicon glyphicon-minus\"></i>\r\n                    </button>\r\n                <input class=\"form-control inline\" type=\"number\" [(value)]=\"product.count\" min=\"0\">\r\n                <button class=\"btn btn-primary btn-xs\" (click)=\"onIncrease(product)\">\r\n                    <i class=\"glyphicon glyphicon-plus\"></i>\r\n                    </button>\r\n            </p>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div *ngIf=\"products.length<=0\">\r\n    <hr>\r\n    <p class=\"no-product\">暂无商品</p>\r\n</div>\r\n<div class=\"btn-pay\" role=\"button\" *ngIf=\"productsIncart.length>0\" (click)=\"gotoOrder()\">\r\n    结算 <span class=\"badge\">{{productsIncart.length}}</span>\r\n</div>"
 
 /***/ }),
 
-/***/ 700:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"visible-sm visible-xs\">\r\n    <img class=\"image-responsive\" src=\"../../assets/images/banner.png\" alt=\"banner\" width=\"100%\">\r\n</div>\r\n<div class=\"row\">\r\n    <div class=\"col-xs-3\" *ngFor=\"let category of categories\">\r\n        <img src=\"{{category.iconPath}}\" class=\"categories img-responsive\" alt=\"icon\" role=\"button\" (click)=\"onCategoryClick(category.id)\">\r\n        <p class=\"catename\">{{category.name}}</p>\r\n        <!--<img src=\"http://placehold.it/60x60\" class=\"categories\" alt=\"icon\" role=\"button\" (click)=\"onCategoryClick(category.id)\">-->\r\n    </div>\r\n</div>\r\n<div class=\"row margin\">\r\n    <a class=\"col-md-3 col-sm-6 col-xs-12 paddingvertical\" routerLink=\"/productlist/{{product.id}}\" *ngFor=\"let product of result?.body.items\">\r\n        <div class=\"clear\">\r\n            <div class=\"pic\">\r\n                <img class=\"productimg img-responsive\" src=\"{{product.pictures[0].path}}\" alt>\r\n            </div>\r\n            <div class=\"info\">\r\n                <p class=\"font-middle gray bold\">{{product.name}}</p>\r\n                <p class=\"font-small gray\">{{product.description.substring(0,40)+'...'}}</p>\r\n                <p class=\"font-large\">￥{{product.price}}/{{product.unitName}}</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n</div>\r\n<div *ngIf=\"result?.body.items==null||result?.body.items.length<=0\">\r\n    <hr>\r\n    <p class=\"no-product\">暂无商品</p>\r\n</div>"
-
-/***/ }),
-
-/***/ 721:
+/***/ 720:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(399);
@@ -1135,5 +1218,5 @@ module.exports = __webpack_require__(399);
 
 /***/ })
 
-},[721]);
+},[720]);
 //# sourceMappingURL=main.bundle.map

@@ -41,5 +41,7 @@
      <Folder Include="wwwroot\upload\" />
      <Folder Include="wwwroot\upload\" />
      <Folder Include="wwwroot\upload\" />
+     <Folder Include="wwwroot\upload\" />
+     <Folder Include="wwwroot\upload\" />
    </ItemGroup>
 </Project>

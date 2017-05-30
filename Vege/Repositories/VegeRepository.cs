@@ -223,7 +223,7 @@ namespace Vege.Repositories
         public async Task<bool> AddOrder(Order order)
         {
             this.context.Orders.Add(order);
-            this.context.CartItems.RemoveRange(this.context.CartItems);
+            //this.context.CartItems.RemoveRange(this.context.CartItems);
             return (await this.context.SaveChangesAsync()) > 0;
         }
 
