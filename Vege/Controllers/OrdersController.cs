@@ -47,6 +47,7 @@ namespace Vege.Controllers
             Result<Object> result = new Result<object>();
             try
             {
+                order.CreateTime = DateTime.Now;
                 bool succ = await this.vegeRepository.AddOrder(order);
                 if (succ)
                 {

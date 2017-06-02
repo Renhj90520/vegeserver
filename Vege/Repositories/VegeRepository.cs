@@ -170,6 +170,7 @@ namespace Vege.Repositories
                 Province = aa.Province,
                 State = ii.State,
                 Street = aa.Street,
+                DeliveryCharge = ii.DeliveryCharge,
                 Products = ii.Products.Join(this.context.Products, op => op.ProductId, p => p.Id, (oop, pp) => new OrderItemDTO
                 {
                     Id = oop.Id,
@@ -402,6 +403,19 @@ namespace Vege.Repositories
         public async Task<bool> UpdateCate(Category cate)
         {
             this.context.Categories.Update(cate);
+            return (await this.context.SaveChangesAsync() > 0);
+        }
+
+        public async Task<bool> UpdateUnit(Unit unit)
+        {
+            this.context.Units.Update(unit);
+            await this.context.Products.Where(p => p.UnitId == unit.Id).ForEachAsync(pp =>
+            {
+                pp.UnitId = unit.Id;
+                pp.UnitName = unit.Name;
+                pp.Step = unit.Step;
+            });
+
             return (await this.context.SaveChangesAsync() > 0);
         }
     }

@@ -23,5 +23,6 @@ namespace Vege.DTO
         public string Province { get; set; }
         public string Name { get; set; }
         public string Area { get; set; }
+        public double DeliveryCharge { get; set; }
     }
 }

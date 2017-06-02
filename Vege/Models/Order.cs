@@ -20,5 +20,6 @@ namespace Vege.Models
         public ICollection<OrderItem> Products { get; set; }
         public int AddressId { get; set; }
         public string CancelReason { get; set; }
+        public double DeliveryCharge { get; set; } = 0;
     }
 }

@@ -8,9 +8,10 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170601121843_unitstepinttodouble")]
+    partial class unitstepinttodouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -45,7 +46,7 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Count");
+                    b.Property<int>("Count");
 
                     b.Property<int>("ProductId");
 
@@ -85,8 +86,6 @@ namespace Vege.Migrations
 
                     b.Property<DateTime>("CreateTime");
 
-                    b.Property<double>("DeliveryCharge");
-
                     b.Property<DateTime>("FinishTime");
 
                     b.Property<string>("OpenId");
@@ -103,7 +102,7 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Count");
+                    b.Property<int>("Count");
 
                     b.Property<int?>("OrderId");
 
@@ -151,7 +150,7 @@ namespace Vege.Migrations
 
                     b.Property<int>("State");
 
-                    b.Property<double>("Step");
+                    b.Property<int>("Step");
 
                     b.Property<double>("TotalCount");
 

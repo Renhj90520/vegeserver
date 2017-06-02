@@ -33,5 +33,6 @@ namespace Vege.Repositories
         Task<bool> UpdateProduct(Product newProduct);
         Task<bool> DeleteAddr(int id);
         Task<bool> UpdateCate(Category cate);
+        Task<bool> UpdateUnit(Unit unit);
     }
 }

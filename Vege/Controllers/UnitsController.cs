@@ -62,5 +62,28 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUnit([FromBody] Unit unit)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.UpdateUnit(unit))
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
     }
 }

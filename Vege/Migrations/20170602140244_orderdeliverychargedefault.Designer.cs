@@ -8,9 +8,10 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170602140244_orderdeliverychargedefault")]
+    partial class orderdeliverychargedefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -45,7 +46,7 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Count");
+                    b.Property<int>("Count");
 
                     b.Property<int>("ProductId");
 
@@ -103,7 +104,7 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Count");
+                    b.Property<int>("Count");
 
                     b.Property<int?>("OrderId");
 

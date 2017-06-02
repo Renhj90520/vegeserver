@@ -8,6 +8,6 @@ namespace Vege.DTO
 {
     public class OrderItemDTO : Product
     {
-        public int Count { get; set; }
+        public double Count { get; set; }
     }
 }
