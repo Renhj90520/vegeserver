@@ -2,10 +2,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace Vege.Models
 {
-    public class VegeContext : DbContext
+    public class VegeContext : IdentityDbContext<ApplicationUser>
     {
         ILogger<VegeContext> _logger;
         private IConfigurationRoot _config;
@@ -31,7 +33,8 @@ namespace Vege.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(this._config["ConnectionStrings:VegeConnection"]);
+            //optionsBuilder.UseSqlServer(this._config["ConnectionStrings:VegeConnection"]);
+            optionsBuilder.UseMySQL(this._config["ConnectionStrings:VegeConnection"]);
         }
     }
 }

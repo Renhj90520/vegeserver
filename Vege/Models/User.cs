@@ -13,5 +13,8 @@ namespace Vege.Models
         public string Name { get; set; }
         public string Phone { get; set; }
         public string OpenId { get; set; }
+        public string Province { get; set; }
+        public string City { get; set; }
+        public int Sex { get; set; }
     }
 }

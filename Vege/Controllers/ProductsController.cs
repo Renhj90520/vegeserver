@@ -8,6 +8,7 @@ using Vege.Models;
 using Vege.DTO;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.JsonPatch;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,12 +26,12 @@ namespace Vege.Controllers
             this.env = env;
         }
         [HttpGet("{id?}")]
-        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage)
+        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name)
         {
             Result<ItemsResult<Product>> result = new Result<ItemsResult<Product>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllProduct(id, category, index, perPage);
+                result.Body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name);
                 result.State = 1;
             }
             catch (Exception ex)
@@ -115,5 +116,27 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchProduct(int id, [FromBody]JsonPatchDocument<Product> patchDoc)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.UpdateProduct(id, patchDoc))
+                {
+                    result.State = 1;
+                }
+                else
+                {
+                    result.State = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.State = 0;
+                result.Message = ex.Message;
+            }
+            return Ok(result);
+        }
     }
 }

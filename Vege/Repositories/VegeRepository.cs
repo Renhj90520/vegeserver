@@ -54,7 +54,7 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage)
+        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name)
         {
             var products = this.context.Products.Include(p => p.Pictures).Select(p => p)
             .Where(p => p.State == 1);
@@ -62,6 +62,10 @@ namespace Vege.Repositories
             if (id == null && catetoryId != null)
             {
                 products = products.Where(p => p.CategoryId == catetoryId);
+            }
+            if (id == null && !string.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.Name.Contains(name));
             }
             if (id != null)
             {
@@ -417,6 +421,42 @@ namespace Vege.Repositories
             });
 
             return (await this.context.SaveChangesAsync() > 0);
+        }
+
+        public async Task<bool> UpdateProduct(int id, JsonPatchDocument<Product> patchDoc)
+        {
+            var product = await this.context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return false;
+            }
+
+            //var orderToPatch = new Order
+            //{
+            //    AddressId = order.AddressId,
+            //    CancelReason = order.CancelReason,
+            //    CancelTime = order.CancelTime,
+            //    CreateTime = order.CreateTime,
+            //    FinishTime = order.FinishTime,
+            //    OpenId = order.OpenId,
+            //    Products = order.Products,
+            //    State = order.State
+            //};
+
+            patchDoc.ApplyTo(product);
+            return (await this.context.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<bool> AddUser(User user)
+        {
+            await this.context.Users.AddAsync(user);
+            return (await this.context.SaveChangesAsync() > 0);
+        }
+
+        public async Task<bool> CheckUserExists(string openid)
+        {
+            var user = await this.context.Users.Where(u => u.OpenId == openid).FirstOrDefaultAsync();
+            return user != null;
         }
     }
 }

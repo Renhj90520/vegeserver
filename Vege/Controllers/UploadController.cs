@@ -43,7 +43,7 @@ namespace Vege.Controllers
                 {
                     await upload.CopyToAsync(stream);
                 }
-                result.Body = new { Path = this.config.GetValue<string>("PictureServer") + path };
+                result.Body = new { Path = this.config.GetValue<string>("Server") + path };
                 result.State = 1;
             }
             catch (Exception ex)

@@ -12,6 +12,8 @@ using Vege.Repositories;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Vege.WeChatOauth;
 
 namespace Vege
 {
@@ -37,6 +39,7 @@ namespace Vege
             services.AddDbContext<VegeContext>();
             services.AddScoped<IVegeRepository, VegeRepository>();
             services.AddCors();
+            //services.AddIdentity<ApplicationUser,IdentityRole>();
             services.AddMvc();
         }
 
@@ -49,7 +52,18 @@ namespace Vege
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseMvc();
+            //app.UseIdentity();
+            //app.UseWeChatAuthentication(new WeChatOptions()
+            //{
+            //    AppId = "wxcdb956aaa555d76f",
+            //    AppSecret = "58a6fb9aadf9747a6ed356af2f327e1e"
+            //});
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Authorization}/{action=Redirect}");
+            });
         }
     }
 }

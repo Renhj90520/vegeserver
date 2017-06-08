@@ -8,12 +8,14 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170603164046_identitydbcontext")]
+    partial class identitydbcontext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.2");
+                .HasAnnotation("ProductVersion", "1.1.2")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
@@ -351,8 +353,6 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("City");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("OpenId");
@@ -360,10 +360,6 @@ namespace Vege.Migrations
                     b.Property<string>("Password");
 
                     b.Property<string>("Phone");
-
-                    b.Property<string>("Province");
-
-                    b.Property<int>("Sex");
 
                     b.Property<string>("UserName");
 

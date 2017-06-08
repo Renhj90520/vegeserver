@@ -10,7 +10,7 @@ namespace Vege.Repositories
 {
     public interface IVegeRepository
     {
-        ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage);
+        ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name);
         Task<Product> AddProduct(Product product);
         Task<Category> AddCategory(Category category);
         Task<IEnumerable<Category>> GetAllCategories();
@@ -34,5 +34,8 @@ namespace Vege.Repositories
         Task<bool> DeleteAddr(int id);
         Task<bool> UpdateCate(Category cate);
         Task<bool> UpdateUnit(Unit unit);
+        Task<bool> UpdateProduct(int id, JsonPatchDocument<Product> patchDoc);
+        Task<bool> AddUser(User user);
+        Task<bool> CheckUserExists(string openid);
     }
 }
