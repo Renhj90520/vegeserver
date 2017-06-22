@@ -16,8 +16,8 @@ namespace Vege.Repositories
         Task<IEnumerable<Category>> GetAllCategories();
         Task<Unit> AddUnit(Unit unit);
         Task<IEnumerable<Unit>> GetAllUnits();
-        Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
-        Task<bool> AddCartItem(string openId, CartItem cartItem);
+        //Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid);
+        //Task<bool> AddCartItem(string openId, CartItem cartItem);
         ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, DateTime? begin, DateTime? end, bool? noshowRemove);
         Task<bool> AddOrder(Order order);
         Task<bool> UpdateOrder(int id, JsonPatchDocument<Order> patchDoc);
@@ -35,7 +35,12 @@ namespace Vege.Repositories
         Task<bool> UpdateCate(Category cate);
         Task<bool> UpdateUnit(Unit unit);
         Task<bool> UpdateProduct(int id, JsonPatchDocument<Product> patchDoc);
-        Task<bool> AddUser(User user);
+        Task<User> AddUser(User user);
         Task<bool> CheckUserExists(string openid);
+        Task<bool> CheckUserExists(string userName, string password);
+        Task<IEnumerable<User>> GetAllUsers(string type);
+        Task<Favorite> AddFavorite(Favorite fav);
+        Task<bool> DeleteFavorite(int id);
+        Task<IEnumerable<FavoriteDTO>> getFavorites(string openid, int? productId);
     }
 }

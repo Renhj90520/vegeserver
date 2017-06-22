@@ -25,14 +25,14 @@ namespace Vege.Controllers
             Result<IEnumerable<Address>> result = new Result<IEnumerable<Address>>();
             try
             {
-                result.Body = await this.vegeRepository.GetAllAddress(openid);
-                result.State = 1;
+                result.body = await this.vegeRepository.GetAllAddress(openid);
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.Body = null;
-                result.State = 0;
-                result.Message = ex.Message;
+                result.body = null;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -47,19 +47,19 @@ namespace Vege.Controllers
                 var addr = await this.vegeRepository.AddAddress(address);
                 if (addr == null)
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
                 else
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
-                result.Body = addr;
+                result.body = addr;
             }
             catch (Exception ex)
             {
-                result.Body = null;
-                result.State = 0;
-                result.Message = ex.Message;
+                result.body = null;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -79,17 +79,17 @@ namespace Vege.Controllers
             {
                 if (await this.vegeRepository.DeleteAddr(id))
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }

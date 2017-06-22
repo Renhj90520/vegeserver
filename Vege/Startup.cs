@@ -14,6 +14,8 @@ using System.IO;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vege.WeChatOauth;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Vege
 {
@@ -39,8 +41,8 @@ namespace Vege
             services.AddDbContext<VegeContext>();
             services.AddScoped<IVegeRepository, VegeRepository>();
             services.AddCors();
-            //services.AddIdentity<ApplicationUser,IdentityRole>();
-            services.AddMvc();
+            //services.AddIdentity<ApplicationUser, IdentityRole>();
+            services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +60,19 @@ namespace Vege
             //    AppId = "wxcdb956aaa555d76f",
             //    AppSecret = "58a6fb9aadf9747a6ed356af2f327e1e"
             //});
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidIssuer = this.Configuration["Server"],
+                    ValidAudience = this.Configuration["Server"],
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Tokens:Key"])),
+                    //ValidateLifetime = true
+                }
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

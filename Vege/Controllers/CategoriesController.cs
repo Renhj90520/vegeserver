@@ -31,20 +31,20 @@ namespace Vege.Controllers
             try
             {
                 var newCate = await this.vegeRepository.AddCategory(category);
-                result.Body = newCate;
+                result.body = newCate;
                 if (newCate != null)
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
 
             return Ok(result);
@@ -56,14 +56,14 @@ namespace Vege.Controllers
             Result<IEnumerable<Category>> result = new Result<IEnumerable<Category>>();
             try
             {
-                result.Body = await this.vegeRepository.GetAllCategories();
-                result.State = 1;
+                result.body = await this.vegeRepository.GetAllCategories();
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.Body = null;
-                result.State = 0;
-                result.Message = ex.Message;
+                result.body = null;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -82,17 +82,17 @@ namespace Vege.Controllers
                     {
                         System.IO.File.Delete(fullPath);
                     }
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -112,12 +112,12 @@ namespace Vege.Controllers
                         System.IO.File.Delete(p);
                     }
                 }
-                result.State = 1;
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -131,17 +131,17 @@ namespace Vege.Controllers
             {
                 if (await this.vegeRepository.UpdateCate(cate))
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }

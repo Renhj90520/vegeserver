@@ -7,7 +7,7 @@ namespace Vege.Models
 {
     public class ItemsResult<T>
     {
-        public int Count { get; set; }
-        public IEnumerable<T> Items { get; set; }
+        public int count { get; set; }
+        public IEnumerable<T> items { get; set; }
     }
 }

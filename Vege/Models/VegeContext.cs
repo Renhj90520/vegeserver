@@ -2,12 +2,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using MySQL.Data.EntityFrameworkCore.Extensions;
-
 namespace Vege.Models
 {
-    public class VegeContext : IdentityDbContext<ApplicationUser>
+    public class VegeContext : DbContext
     {
         ILogger<VegeContext> _logger;
         private IConfigurationRoot _config;
@@ -17,6 +14,7 @@ namespace Vege.Models
         {
             _logger = logger;
             _config = config;
+            this.Database.AutoTransactionsEnabled = false;
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -24,17 +22,18 @@ namespace Vege.Models
         public DbSet<Order> Orders { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        //public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
+        //public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
             //optionsBuilder.UseSqlServer(this._config["ConnectionStrings:VegeConnection"]);
-            optionsBuilder.UseMySQL(this._config["ConnectionStrings:VegeConnection"]);
+            optionsBuilder.UseMySql(this._config["ConnectionStrings:VegeConnection"]);
         }
     }
 }

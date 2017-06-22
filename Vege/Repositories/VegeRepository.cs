@@ -91,72 +91,72 @@ namespace Vege.Repositories
             //             });
 
             var result = new ItemsResult<Product>();
-            result.Count = products.Count();
+            result.count = products.Count();
             if (index != null)
             {
-                result.Items = products.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
+                result.items = products.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
             }
             else
             {
-                result.Items = products;
+                result.items = products;
             }
 
             return result;
         }
 
-        public async Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid)
-        {
-            var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
-            if (cart != null)
-            {
-                var cartItems = from cp in cart.Products
-                                join p in this.context.Products.Include(p => p.Pictures) on cp.ProductId equals p.Id
-                                join u in this.context.Units on p.UnitId equals u.Id
-                                select new CartItemDTO
-                                {
-                                    Id = p.Id,
-                                    Count = cp.Count,
-                                    Description = p.Description,
-                                    Name = p.Name,
-                                    Pictures = p.Pictures,
-                                    Price = p.Price,
-                                    UnitName = u.Name
-                                };
-                return cartItems;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //public async Task<IEnumerable<CartItemDTO>> GetAllProductInCart(string openid)
+        //{
+        //    var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
+        //    if (cart != null)
+        //    {
+        //        var cartItems = from cp in cart.Products
+        //                        join p in this.context.Products.Include(p => p.Pictures) on cp.ProductId equals p.Id
+        //                        join u in this.context.Units on p.UnitId equals u.Id
+        //                        select new CartItemDTO
+        //                        {
+        //                            Id = p.Id,
+        //                            Count = cp.Count,
+        //                            Description = p.Description,
+        //                            Name = p.Name,
+        //                            Pictures = p.Pictures,
+        //                            Price = p.Price,
+        //                            UnitName = u.Name
+        //                        };
+        //        return cartItems;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public async Task<bool> AddCartItem(string openId, CartItem cartItem)
-        {
-            var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
-            if (cart == null)
-            {
-                ShoppingCart newCart = new ShoppingCart()
-                {
-                    OpenId = openId,
-                    Products = new List<CartItem>()
-                };
-                newCart.Products.Add(cartItem);
-                await this.context.ShoppingCarts.AddAsync(newCart);
-                return (await this.context.SaveChangesAsync()) > 0;
-            }
-            else
-            {
-                if (cart.Products.Any(p => p.ProductId == cartItem.ProductId))
-                {
-                    cart.Products.Where(p => p.ProductId == cartItem.ProductId).FirstOrDefault().Count += cartItem.Count;
-                }
-                else
-                {
-                    cart.Products.Add(cartItem);
-                }
-                return (await this.context.SaveChangesAsync()) > 0;
-            }
-        }
+        //public async Task<bool> AddCartItem(string openId, CartItem cartItem)
+        //{
+        //    var cart = await this.context.ShoppingCarts.Include(c => c.Products).FirstOrDefaultAsync();
+        //    if (cart == null)
+        //    {
+        //        ShoppingCart newCart = new ShoppingCart()
+        //        {
+        //            OpenId = openId,
+        //            Products = new List<CartItem>()
+        //        };
+        //        newCart.Products.Add(cartItem);
+        //        await this.context.ShoppingCarts.AddAsync(newCart);
+        //        return (await this.context.SaveChangesAsync()) > 0;
+        //    }
+        //    else
+        //    {
+        //        if (cart.Products.Any(p => p.ProductId == cartItem.ProductId))
+        //        {
+        //            cart.Products.Where(p => p.ProductId == cartItem.ProductId).FirstOrDefault().Count += cartItem.Count;
+        //        }
+        //        else
+        //        {
+        //            cart.Products.Add(cartItem);
+        //        }
+        //        return (await this.context.SaveChangesAsync()) > 0;
+        //    }
+        //}
 
         public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, DateTime? begin, DateTime? end, bool? noshowRemove)
         {
@@ -212,14 +212,14 @@ namespace Vege.Repositories
             }
             orders = orders.OrderBy(o => o.State).ThenByDescending(o => o.Id);
             ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
-            result.Count = orders.Count();
+            result.count = orders.Count();
             if (index != null)
             {
-                result.Items = orders.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
+                result.items = orders.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
             }
             else
             {
-                result.Items = orders;
+                result.items = orders;
             }
 
             return result;
@@ -278,7 +278,7 @@ namespace Vege.Repositories
             }
             else
             {
-                return await addresses.Where(a => a.UserId == 1).ToListAsync();
+                return await addresses.Where(a => a.OpenId == openId).ToListAsync();
             }
         }
 
@@ -447,16 +447,92 @@ namespace Vege.Repositories
             return (await this.context.SaveChangesAsync()) > 0;
         }
 
-        public async Task<bool> AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
-            await this.context.Users.AddAsync(user);
-            return (await this.context.SaveChangesAsync() > 0);
+            var u = await this.context.Users.AddAsync(user);
+            return (await this.context.SaveChangesAsync() > 0) ? u.Entity : null;
         }
 
         public async Task<bool> CheckUserExists(string openid)
         {
             var user = await this.context.Users.Where(u => u.OpenId == openid).FirstOrDefaultAsync();
             return user != null;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers(string type)
+        {
+            if (type == "0")
+            {
+                return await this.context.Users.Where(u => !string.IsNullOrEmpty(u.OpenId)).ToListAsync();
+            }
+            else
+            {
+                return await this.context.Users.Where(u => string.IsNullOrEmpty(u.OpenId)).ToListAsync();
+            }
+        }
+
+        public async Task<bool> CheckUserExists(string userName, string password)
+        {
+            var user = await this.context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
+            return user != null;
+        }
+
+        public async Task<Favorite> AddFavorite(Favorite fav)
+        {
+            var favorite = await this.context.Favorites.AddAsync(fav);
+            if (await this.context.SaveChangesAsync() > 0)
+            {
+                return favorite.Entity;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteFavorite(int id)
+        {
+            var fav = await this.context.Favorites.FindAsync(id);
+            if (fav == null)
+            {
+                return true;
+            }
+            else
+            {
+                this.context.Favorites.Remove(fav);
+                if ((await this.context.SaveChangesAsync()) > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<FavoriteDTO>> getFavorites(string openid, int? productId)
+        {
+            var favorites = this.context.Favorites.Join(this.context.Products.Where(p => p.State == 1).Include(p => p.Pictures), i => i.ProductId, p => p.Id, (ii, pp) => new FavoriteDTO()
+            {
+                Id = pp.Id,
+                Name = pp.Name,
+                FavId = ii.Id,
+                OpenId = ii.OpenId,
+                Pictures = pp.Pictures,
+                Step = pp.Step,
+                Price = pp.Price,
+                UnitId = pp.UnitId,
+                UnitName = pp.UnitName
+            }).Where(f => f.OpenId == openid);
+            if (productId != null)
+            {
+                return await favorites.Where(f => f.Id == productId).ToListAsync();
+            }
+            else
+            {
+                return await favorites.ToListAsync();
+            }
         }
     }
 }

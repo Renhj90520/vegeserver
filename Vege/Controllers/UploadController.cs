@@ -43,13 +43,13 @@ namespace Vege.Controllers
                 {
                     await upload.CopyToAsync(stream);
                 }
-                result.Body = new { Path = this.config.GetValue<string>("Server") + path };
-                result.State = 1;
+                result.body = new { Path = this.config.GetValue<string>("Server") + path };
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
 
             return Ok(result);
@@ -73,13 +73,13 @@ namespace Vege.Controllers
                         }
                     }
                 }
-                result.State = 1;
-                result.Body = true;
+                result.state = 1;
+                result.body = true;
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
 
             return Ok(result);

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Vege.Models
 {
-    public class Picture
+    public class Favorite
     {
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [MaxLength(70)]
-        public string Path { get; set; }
-        //public int isPrimary { get; set; } = 0;
+        [MaxLength(28)]
+        public string OpenId { get; set; }
+        public int ProductId { get; set; }
     }
 }

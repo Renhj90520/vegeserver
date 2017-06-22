@@ -7,11 +7,13 @@ using Vege.Models;
 using Vege.Repositories;
 using Vege.DTO;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
@@ -28,21 +30,21 @@ namespace Vege.Controllers
             Result<ItemsResult<OrderDTO>> result = new Result<ItemsResult<OrderDTO>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllOrders(openid, index, perPage, keyword, begin, end, noshowRemove);
-                result.State = 1;
+                result.body = this.vegeRepository.GetAllOrders(openid, index, perPage, keyword, begin, end, noshowRemove);
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.Body = null;
-                result.Message = ex.Message;
-                result.State = 0;
+                result.body = null;
+                result.message = ex.Message;
+                result.state = 0;
             }
             return Ok(result);
         }
 
         // POST api/values
-        [HttpPost("{openid?}")]
-        public async Task<IActionResult> Post(string opendid, [FromBody]Order order)
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]Order order)
         {
             Result<Object> result = new Result<object>();
             try
@@ -51,17 +53,17 @@ namespace Vege.Controllers
                 bool succ = await this.vegeRepository.AddOrder(order);
                 if (succ)
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -75,17 +77,17 @@ namespace Vege.Controllers
                 var succ = await this.vegeRepository.UpdateOrder(id, patchDoc);
                 if (succ)
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -99,17 +101,17 @@ namespace Vege.Controllers
                 var succ = await this.vegeRepository.RemoveOrder(id);
                 if (succ)
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
 

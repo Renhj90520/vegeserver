@@ -7,8 +7,8 @@ namespace Vege.Models
 {
     public class Result<T>
     {
-        public string Message { get; set; }
-        public int State { get; set; }
-        public T Body { get; set; }
+        public string message { get; set; }
+        public int state { get; set; }
+        public T body { get; set; }
     }
 }

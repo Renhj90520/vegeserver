@@ -9,11 +9,13 @@ using Vege.DTO;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/")]
     public class ProductsController : Controller
     {
@@ -31,13 +33,13 @@ namespace Vege.Controllers
             Result<ItemsResult<Product>> result = new Result<ItemsResult<Product>>();
             try
             {
-                result.Body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name);
-                result.State = 1;
+                result.body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name);
+                result.state = 1;
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -51,18 +53,18 @@ namespace Vege.Controllers
                 var newProduct = await this.vegeRepository.AddProduct(product);
                 if (newProduct == null)
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
                 else
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
-                result.Body = newProduct;
+                result.body = newProduct;
             }
             catch (Exception ex)
             {
-                result.Message = ex.Message;
-                result.State = 0;
+                result.message = ex.Message;
+                result.state = 0;
             }
 
             return Ok(result);
@@ -82,17 +84,17 @@ namespace Vege.Controllers
                     {
                         System.IO.File.Delete(fullPath);
                     }
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -105,13 +107,13 @@ namespace Vege.Controllers
             {
                 if (await this.vegeRepository.UpdateProduct(newProduct))
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }
@@ -124,17 +126,17 @@ namespace Vege.Controllers
             {
                 if (await this.vegeRepository.UpdateProduct(id, patchDoc))
                 {
-                    result.State = 1;
+                    result.state = 1;
                 }
                 else
                 {
-                    result.State = 0;
+                    result.state = 0;
                 }
             }
             catch (Exception ex)
             {
-                result.State = 0;
-                result.Message = ex.Message;
+                result.state = 0;
+                result.message = ex.Message;
             }
             return Ok(result);
         }

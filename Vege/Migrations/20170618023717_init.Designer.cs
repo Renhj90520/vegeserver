@@ -8,55 +8,43 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    [Migration("20170514030522_orderuseridtoopenid")]
-    partial class orderuseridtoopenid
+    [Migration("20170618023717_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "1.1.2");
 
             modelBuilder.Entity("Vege.Models.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Area");
+                    b.Property<string>("Area")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Phone");
+                    b.Property<string>("OpenId")
+                        .HasMaxLength(28);
 
-                    b.Property<string>("Province");
+                    b.Property<string>("Phone")
+                        .HasMaxLength(15);
 
-                    b.Property<string>("Street");
+                    b.Property<string>("Province")
+                        .HasMaxLength(20);
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("Street")
+                        .HasMaxLength(80);
 
                     b.HasKey("Id");
 
                     b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("Vege.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("Count");
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int?>("ShoppingCartId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShoppingCartId");
-
-                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Vege.Models.Category", b =>
@@ -64,11 +52,30 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("IconPath")
+                        .HasMaxLength(70);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(10);
 
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Vege.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("OpenId")
+                        .HasMaxLength(28);
+
+                    b.Property<int>("ProductId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("Vege.Models.Order", b =>
@@ -76,13 +83,21 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AddressId");
+
+                    b.Property<string>("CancelReason")
+                        .HasMaxLength(160);
+
                     b.Property<DateTime>("CancelTime");
 
                     b.Property<DateTime>("CreateTime");
 
+                    b.Property<double>("DeliveryCharge");
+
                     b.Property<DateTime>("FinishTime");
 
-                    b.Property<int>("OpenId");
+                    b.Property<string>("OpenId")
+                        .HasMaxLength(28);
 
                     b.Property<int>("State");
 
@@ -96,7 +111,7 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Count");
+                    b.Property<double>("Count");
 
                     b.Property<int?>("OrderId");
 
@@ -116,11 +131,10 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Path");
+                    b.Property<string>("Path")
+                        .HasMaxLength(70);
 
                     b.Property<int?>("ProductId");
-
-                    b.Property<int>("isPrimary");
 
                     b.HasKey("Id");
 
@@ -136,35 +150,28 @@ namespace Vege.Migrations
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(20);
 
                     b.Property<double>("Price");
 
                     b.Property<int>("State");
 
+                    b.Property<double>("Step");
+
                     b.Property<double>("TotalCount");
 
                     b.Property<int>("UnitId");
 
-                    b.Property<string>("UnitName");
+                    b.Property<string>("UnitName")
+                        .HasMaxLength(10);
 
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Vege.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("OpenId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Vege.Models.Unit", b =>
@@ -172,7 +179,10 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(10);
+
+                    b.Property<double>("Step");
 
                     b.HasKey("Id");
 
@@ -184,26 +194,32 @@ namespace Vege.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("City")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("OpenId");
+                    b.Property<string>("Name")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Password");
+                    b.Property<string>("OpenId")
+                        .HasMaxLength(28);
 
-                    b.Property<string>("Phone");
+                    b.Property<string>("Password")
+                        .HasMaxLength(32);
 
-                    b.Property<string>("UserName");
+                    b.Property<string>("Phone")
+                        .HasMaxLength(15);
+
+                    b.Property<string>("Province")
+                        .HasMaxLength(20);
+
+                    b.Property<int?>("Sex");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Vege.Models.CartItem", b =>
-                {
-                    b.HasOne("Vege.Models.ShoppingCart")
-                        .WithMany("Products")
-                        .HasForeignKey("ShoppingCartId");
                 });
 
             modelBuilder.Entity("Vege.Models.OrderItem", b =>
