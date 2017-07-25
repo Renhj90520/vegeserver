@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vege", "Vege\Vege.csproj", "{F2FEE85E-6705-4AB8-9C04-560CBE562350}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vege.IdentityServer", "Vege.IdentityServer\Vege.IdentityServer.csproj", "{3B9F2A65-9E01-4E16-988A-0D9FF0160D5D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VegeOrderService", "VegeOrderService\VegeOrderService.csproj", "{310B1418-54D0-4796-B070-1044982AD6A2}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{F2FEE85E-6705-4AB8-9C04-560CBE562350}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2FEE85E-6705-4AB8-9C04-560CBE562350}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2FEE85E-6705-4AB8-9C04-560CBE562350}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B9F2A65-9E01-4E16-988A-0D9FF0160D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B9F2A65-9E01-4E16-988A-0D9FF0160D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B9F2A65-9E01-4E16-988A-0D9FF0160D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B9F2A65-9E01-4E16-988A-0D9FF0160D5D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
