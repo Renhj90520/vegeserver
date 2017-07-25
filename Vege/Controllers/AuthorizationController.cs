@@ -243,5 +243,12 @@ namespace Vege.Controllers
                 return await res.Content.ReadAsStringAsync();
             }
         }
+
+        [HttpGet("getclientip")]
+        public IActionResult getClientIp()
+        {
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return Ok(ip);
+        }
     }
 }

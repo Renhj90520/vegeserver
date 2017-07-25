@@ -41,6 +41,7 @@ namespace Vege
             services.AddDbContext<VegeContext>();
             services.AddScoped<IVegeRepository, VegeRepository>();
             services.AddCors();
+            services.AddMemoryCache();
             //services.AddIdentity<ApplicationUser, IdentityRole>();
             services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver());
         }

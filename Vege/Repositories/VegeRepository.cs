@@ -1,21 +1,26 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vege.DTO;
 using Vege.Models;
+using WxPayAPI;
 
 namespace Vege.Repositories
 {
     public class VegeRepository : IVegeRepository
     {
         private VegeContext context;
-        public VegeRepository(VegeContext context)
+        private ILogger log;
+
+        public VegeRepository(VegeContext context, ILogger log)
         {
             this.context = context;
+            this.log = log;
         }
 
         public async Task<Category> AddCategory(Category category)
@@ -158,7 +163,7 @@ namespace Vege.Repositories
         //    }
         //}
 
-        public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, DateTime? begin, DateTime? end, bool? noshowRemove)
+        public ItemsResult<OrderDTO> GetAllOrders(string openId, int? index, int? perPage, string keyword, int? state, DateTime? begin, DateTime? end, bool? noshowRemove)
         {
             var orders = this.context.Orders.Include(order => order.Products).Join(this.context.Addresses, i => i.AddressId, a => a.Id, (ii, aa) => new OrderDTO
             {
@@ -175,6 +180,12 @@ namespace Vege.Repositories
                 State = ii.State,
                 Street = aa.Street,
                 DeliveryCharge = ii.DeliveryCharge,
+                WXOrderId = ii.WXOrderId,
+                Latitude = ii.Latitude,
+                Longitude = ii.Longitude,
+                RefundNote = ii.RefundNote,
+                CancelReason = ii.CancelReason,
+                IsPaid = ii.IsPaid,
                 Products = ii.Products.Join(this.context.Products, op => op.ProductId, p => p.Id, (oop, pp) => new OrderItemDTO
                 {
                     Id = oop.Id,
@@ -191,6 +202,10 @@ namespace Vege.Repositories
                     UnitName = pp.UnitName
                 })
             });
+            if (!string.IsNullOrEmpty(openId))
+            {
+                orders = orders.Where(o => o.OpenId == openId);
+            }
             if (!string.IsNullOrEmpty(keyword))
             {
                 orders = orders.Where(o => (o.Name.Contains(keyword) || o.Phone.Contains(keyword)));
@@ -207,8 +222,12 @@ namespace Vege.Repositories
             {
                 if (noshowRemove.Value)
                 {
-                    orders = orders.Where(o => o.State != 4);
+                    orders = orders.Where(o => o.State != 7);
                 }
+            }
+            if (state != null)
+            {
+                orders = orders.Where(o => o.State == state.Value);
             }
             orders = orders.OrderBy(o => o.State).ThenByDescending(o => o.Id);
             ItemsResult<OrderDTO> result = new ItemsResult<OrderDTO>();
@@ -225,11 +244,11 @@ namespace Vege.Repositories
             return result;
         }
 
-        public async Task<bool> AddOrder(Order order)
+        public async Task<Order> AddOrder(Order order)
         {
-            this.context.Orders.Add(order);
+            var newOrder = this.context.Orders.Add(order).Entity;
             //this.context.CartItems.RemoveRange(this.context.CartItems);
-            return (await this.context.SaveChangesAsync()) > 0;
+            return (await this.context.SaveChangesAsync()) > 0 ? newOrder : null;
         }
 
         public async Task<IEnumerable<Unit>> GetAllUnits()
@@ -533,6 +552,65 @@ namespace Vege.Repositories
             {
                 return await favorites.ToListAsync();
             }
+        }
+
+        public async Task refundOrder(int id, RefundWrapper wrapper, Result<bool> result)
+        {
+            Order order = await context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                if (order.IsPaid == "1")
+                {
+                    if (!string.IsNullOrEmpty(order.WXOrderId))
+                    {
+                        WxPayData data = new WxPayData(log);
+                        data.SetValue("transaction_id", order.WXOrderId);
+                        data.SetValue("total_fee", wrapper.TotalCost);
+                        data.SetValue("refund_fee", wrapper.RefundCost);
+                        data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo());
+
+                        WxPayData res = await WxPayApi.Refund(data, log, 15);
+                        if (res != null)
+                        {
+                            if ("SUCCESS".Equals(res.GetValue("return_code")))
+                            {
+                                order.RefundNote = wrapper.RefundNote;
+                                order.IsPaid = "2";
+                                await context.SaveChangesAsync();
+                                result.state = 1;
+                                result.body = true;
+                            }
+                            else
+                            {
+                                result.state = 0;
+                                result.message = res.GetValue("return_msg").ToString();
+                            }
+                        }
+                        else
+                        {
+                            result.state = 0;
+                            result.message = "微信支付接口请求失败";
+                        }
+                    }
+                    else
+                    {
+                        result.state = 0;
+                        result.message = "微信支付订单号不存在";
+                    }
+                }
+                else
+                {
+                    result.state = 0;
+                    result.message = "订单未使用微信支付";
+                }
+
+            }
+            else
+            {
+                result.state = 0;
+                result.message = "订单不存在";
+            }
+
         }
     }
 }

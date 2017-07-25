@@ -25,12 +25,12 @@ namespace Vege.Controllers
 
         // GET: api/values
         [HttpGet("{openid?}")]
-        public IActionResult GetAllProductsInOrder(string openid, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery]string keyword, [FromQuery]DateTime? begin, [FromQuery]DateTime? end, [FromQuery]Boolean? noshowRemove)
+        public IActionResult GetAllProductsInOrder(string openid, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery]string keyword, [FromQuery]int? state, [FromQuery]DateTime? begin, [FromQuery]DateTime? end, [FromQuery]Boolean? noshowRemove)
         {
             Result<ItemsResult<OrderDTO>> result = new Result<ItemsResult<OrderDTO>>();
             try
             {
-                result.body = this.vegeRepository.GetAllOrders(openid, index, perPage, keyword, begin, end, noshowRemove);
+                result.body = this.vegeRepository.GetAllOrders(openid, index, perPage, keyword, state, begin, end, noshowRemove);
                 result.state = 1;
             }
             catch (Exception ex)
@@ -46,19 +46,13 @@ namespace Vege.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Order order)
         {
-            Result<Object> result = new Result<object>();
+            Result<Order> result = new Result<Order>();
             try
             {
                 order.CreateTime = DateTime.Now;
-                bool succ = await this.vegeRepository.AddOrder(order);
-                if (succ)
-                {
-                    result.state = 1;
-                }
-                else
-                {
-                    result.state = 0;
-                }
+
+                result.body = await this.vegeRepository.AddOrder(order);
+                result.state = 1;
             }
             catch (Exception ex)
             {

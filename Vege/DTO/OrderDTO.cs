@@ -24,5 +24,11 @@ namespace Vege.DTO
         public string Name { get; set; }
         public string Area { get; set; }
         public double DeliveryCharge { get; set; }
+        public string WXOrderId { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string RefundNote { get; set; }
+        public string CancelReason { get; set; }
+        public string IsPaid { get; set; }
     }
 }
