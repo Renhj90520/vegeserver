@@ -7,21 +7,26 @@ using Vege.Models;
 using Vege.Repositories;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
         private IVegeRepository vegeRepository;
         private IHostingEnvironment env;
+        private ILogger<CategoriesController> log;
 
-        public CategoriesController(IVegeRepository vegeRepository, IHostingEnvironment env)
+        public CategoriesController(IVegeRepository vegeRepository, IHostingEnvironment env, ILogger<CategoriesController> log)
         {
             this.vegeRepository = vegeRepository;
             this.env = env;
+            this.log = log;
         }
         // POST api/values
         [HttpPost]
@@ -45,6 +50,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);
@@ -64,6 +70,7 @@ namespace Vege.Controllers
                 result.body = null;
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -93,6 +100,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -118,6 +126,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -142,6 +151,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }

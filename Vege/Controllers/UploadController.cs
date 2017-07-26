@@ -9,23 +9,28 @@ using Microsoft.AspNetCore.Hosting;
 using Vege.Models;
 using Vege.Repositories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
         private IHostingEnvironment env;
         private IVegeRepository vegeRepository;
         private IConfigurationRoot config;
+        private ILogger<UploadController> log;
 
-        public UploadController(IHostingEnvironment env, IVegeRepository vegeRepository, IConfigurationRoot config)
+        public UploadController(IHostingEnvironment env, IVegeRepository vegeRepository, IConfigurationRoot config, ILogger<UploadController> log)
         {
             this.env = env;
             this.vegeRepository = vegeRepository;
             this.config = config;
+            this.log = log;
         }
         // POST api/values
         [HttpPost]
@@ -50,6 +55,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);
@@ -80,6 +86,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);

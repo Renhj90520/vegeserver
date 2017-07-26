@@ -6,19 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
 using Vege.Repositories;
 using Vege.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : Controller
     {
         private IVegeRepository vegeRepository;
+        private ILogger<UsersController> log;
 
-        public UsersController(IVegeRepository vegeRepository)
+        public UsersController(IVegeRepository vegeRepository, ILogger<UsersController> log)
         {
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
         // GET: api/values
         [HttpGet("{type?}")]
@@ -34,6 +39,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -54,6 +60,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }

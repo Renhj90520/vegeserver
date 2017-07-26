@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Vege.WeChatOauth;
 using System.Net.Http;
 using Vege.Repositories;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,12 +25,14 @@ namespace Vege.Controllers
         private IConfigurationRoot config;
         private IMemoryCache cache;
         private IVegeRepository vegeRepository;
+        private ILogger<WeChatController> log;
 
-        public WeChatController(IConfigurationRoot config, IMemoryCache cache, IVegeRepository vegeRepository)
+        public WeChatController(IConfigurationRoot config, IMemoryCache cache, IVegeRepository vegeRepository, ILogger<WeChatController> log)
         {
             this.config = config;
             this.cache = cache;
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
 
         [HttpGet("getwxconfig")]
@@ -51,6 +54,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -67,6 +71,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);

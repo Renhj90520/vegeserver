@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vege.WeChatOauth;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Reflection;
+using log4net.Config;
+using Vege.Log;
 
 namespace Vege
 {
@@ -29,6 +32,11 @@ namespace Vege
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            var repo = log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(),
+                                        typeof(log4net.Repository.Hierarchy.Hierarchy));
+
+            XmlConfigurator.Configure(repo, new FileInfo("log4net.config"));
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -42,6 +50,7 @@ namespace Vege
             services.AddScoped<IVegeRepository, VegeRepository>();
             services.AddCors();
             services.AddMemoryCache();
+            //services.AddLogging();
             //services.AddIdentity<ApplicationUser, IdentityRole>();
             services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver());
         }
@@ -50,8 +59,9 @@ namespace Vege
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseCors(builder => builder.AllowAnyOrigin());
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
+            loggerFactory.AddLog4Net();
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
             app.UseStaticFiles();

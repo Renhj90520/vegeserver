@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
 using Vege.Repositories;
 using Vege.DTO;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,10 +16,12 @@ namespace Vege.Controllers
     public class FavoritesController : Controller
     {
         private IVegeRepository vegeRepository;
+        private ILogger<FavoritesController> log;
 
-        public FavoritesController(IVegeRepository vegeRepository)
+        public FavoritesController(IVegeRepository vegeRepository, ILogger<FavoritesController> log)
         {
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
         // GET: api/values
         [HttpGet("{openid}/{productid?}")]
@@ -34,6 +37,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -52,6 +56,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -76,6 +81,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }

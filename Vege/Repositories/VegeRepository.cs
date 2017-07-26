@@ -15,9 +15,9 @@ namespace Vege.Repositories
     public class VegeRepository : IVegeRepository
     {
         private VegeContext context;
-        private ILogger log;
+        private ILogger<VegeRepository> log;
 
-        public VegeRepository(VegeContext context, ILogger log)
+        public VegeRepository(VegeContext context, ILogger<VegeRepository> log)
         {
             this.context = context;
             this.log = log;

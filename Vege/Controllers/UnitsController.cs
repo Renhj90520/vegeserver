@@ -5,19 +5,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Vege.Models;
 using Vege.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vege.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UnitsController : Controller
     {
         private IVegeRepository vegeRepository;
+        private ILogger<UnitsController> log;
 
-        public UnitsController(IVegeRepository vegeRepository)
+        public UnitsController(IVegeRepository vegeRepository, ILogger<UnitsController> log)
         {
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
         // POST api/values
         [HttpPost]
@@ -41,6 +46,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);
@@ -59,6 +65,7 @@ namespace Vege.Controllers
                 result.body = null;
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -82,6 +89,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }

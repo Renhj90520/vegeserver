@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Vege.DTO;
 using Vege.Utils;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,11 +30,13 @@ namespace Vege.Controllers
     {
         private IConfigurationRoot config;
         private IVegeRepository vegeRepository;
+        private ILogger<AuthorizationController> log;
 
-        public AuthorizationController(IConfigurationRoot config, IVegeRepository vegeRepository)
+        public AuthorizationController(IConfigurationRoot config, IVegeRepository vegeRepository, ILogger<AuthorizationController> log)
         {
             this.config = config;
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
         public IActionResult Redirect()
         {
@@ -143,6 +146,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
                 return Ok(result);
             }
         }
@@ -173,6 +177,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -217,6 +222,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);

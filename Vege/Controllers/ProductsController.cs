@@ -10,6 +10,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,11 +22,13 @@ namespace Vege.Controllers
     {
         private IVegeRepository vegeRepository;
         private IHostingEnvironment env;
+        private ILogger<ProductsController> log;
 
-        public ProductsController(IVegeRepository vegeRepository, IHostingEnvironment env)
+        public ProductsController(IVegeRepository vegeRepository, IHostingEnvironment env, ILogger<ProductsController> log)
         {
             this.vegeRepository = vegeRepository;
             this.env = env;
+            this.log = log;
         }
         [HttpGet("{id?}")]
         public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name)
@@ -40,6 +43,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -65,6 +69,7 @@ namespace Vege.Controllers
             {
                 result.message = ex.Message;
                 result.state = 0;
+                log.LogError(ex.StackTrace);
             }
 
             return Ok(result);
@@ -95,6 +100,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -114,6 +120,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -137,6 +144,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }

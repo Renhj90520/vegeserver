@@ -8,6 +8,7 @@ using Vege.Repositories;
 using Vege.DTO;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,9 +19,12 @@ namespace Vege.Controllers
     public class OrdersController : Controller
     {
         private IVegeRepository vegeRepository;
-        public OrdersController(IVegeRepository vegeRepository)
+        private ILogger<OrdersController> log;
+
+        public OrdersController(IVegeRepository vegeRepository, ILogger<OrdersController> log)
         {
             this.vegeRepository = vegeRepository;
+            this.log = log;
         }
 
         // GET: api/values
@@ -38,6 +42,7 @@ namespace Vege.Controllers
                 result.body = null;
                 result.message = ex.Message;
                 result.state = 0;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -58,6 +63,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -82,6 +88,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
         }
@@ -106,6 +113,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
+                log.LogError(ex.StackTrace);
             }
             return Ok(result);
 
