@@ -21,8 +21,9 @@ namespace Vege.Models
         public double Price { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
-        public int State { get; set; } = 1;
+        public int State { get; set; } = 0;
         public ICollection<Picture> Pictures { get; set; }
         public int CategoryId { get; set; }
+        public int Sequence { get; set; } = 0;
     }
 }

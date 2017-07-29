@@ -8,9 +8,10 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170726055220_productsequence")]
+    partial class productsequence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2");
@@ -56,9 +57,6 @@ namespace Vege.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(10);
-
-                    b.Property<string>("State")
-                        .HasMaxLength(1);
 
                     b.HasKey("Id");
 

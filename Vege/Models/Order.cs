@@ -29,7 +29,7 @@ namespace Vege.Models
         /// 0:新订单未通知,1:新订单已通知,2:已支付未通知,3:已支付已通知
         /// </summary>
         [MaxLength(1)]
-        public string NotifyState { get; set; }
+        public string NotifyState { get; set; } = "0";
         [MaxLength(32)]
         public string WXOrderId { get; set; }
         public double Latitude { get; set; }

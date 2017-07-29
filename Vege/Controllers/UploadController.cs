@@ -42,7 +42,7 @@ namespace Vege.Controllers
                 long size = upload.Length;
                 var fileName = upload.FileName;
                 var extension = fileName.Substring(fileName.LastIndexOf('.'));
-                string path = @"upload/" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
+                string path = @"/upload/" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
                 var filePath = Path.Combine(this.env.WebRootPath, "upload", DateTime.Now.ToString("yyyyMMddHHmmss") + extension);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -55,7 +55,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);
@@ -86,7 +86,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);

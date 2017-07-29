@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.JsonPatch;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -50,19 +51,19 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories([FromQuery]string state)
         {
             Result<IEnumerable<Category>> result = new Result<IEnumerable<Category>>();
             try
             {
-                result.body = await this.vegeRepository.GetAllCategories();
+                result.body = await this.vegeRepository.GetAllCategories(state);
                 result.state = 1;
             }
             catch (Exception ex)
@@ -70,7 +71,7 @@ namespace Vege.Controllers
                 result.body = null;
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -100,7 +101,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -126,7 +127,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -151,7 +152,32 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> patchCate(int id, [FromBody]JsonPatchDocument<Category> patchDoc)
+        {
+            var result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.patchCate(id, patchDoc))
+                {
+                    result.body = true;
+                    result.state = 1;
+                }
+                else
+                {
+                    result.state = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }

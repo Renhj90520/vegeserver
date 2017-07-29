@@ -31,19 +31,19 @@ namespace Vege.Controllers
             this.log = log;
         }
         [HttpGet("{id?}")]
-        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name)
+        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name, [FromQuery] int? state)
         {
             Result<ItemsResult<Product>> result = new Result<ItemsResult<Product>>();
             try
             {
-                result.body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name);
+                result.body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name, state);
                 result.state = 1;
             }
             catch (Exception ex)
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -69,7 +69,7 @@ namespace Vege.Controllers
             {
                 result.message = ex.Message;
                 result.state = 0;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);
@@ -100,7 +100,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -120,7 +120,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -144,7 +144,34 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
+
+        [HttpPatch("exchange/{id1}/{id2}")]
+        public async Task<IActionResult> ReOrder(int id1, int id2)
+        {
+            Result<bool> result = new Result<bool>();
+            try
+            {
+                var succ = await this.vegeRepository.reorder(id1, id2);
+                if (succ)
+                {
+                    result.state = 1;
+                    result.body = succ;
+                }
+                else
+                {
+                    result.state = 0;
+                    result.message = "商品不存在";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }

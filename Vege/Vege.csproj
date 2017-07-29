@@ -55,4 +55,9 @@
      <Folder Include="wwwroot\upload\" />
      <Folder Include="wwwroot\upload\" />
    </ItemGroup>
+   <ItemGroup>
+     <None Update="log4net.config">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+   </ItemGroup>
 </Project>

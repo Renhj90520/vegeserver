@@ -31,6 +31,7 @@ namespace Vege
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+            builder.AddEnvironmentVariables();
             Configuration = builder.Build();
 
             var repo = log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(),
@@ -58,10 +59,16 @@ namespace Vege
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseCors(builder => builder.AllowAnyOrigin());
+
             //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             //loggerFactory.AddDebug();
             loggerFactory.AddLog4Net();
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            });
             app.UseDeveloperExceptionPage();
             app.UseDefaultFiles();
             app.UseStaticFiles();

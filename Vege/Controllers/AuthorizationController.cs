@@ -20,6 +20,7 @@ using System.Text;
 using Vege.DTO;
 using Vege.Utils;
 using Microsoft.Extensions.Logging;
+using WxPayAPI;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,7 +42,7 @@ namespace Vege.Controllers
         public IActionResult Redirect()
         {
             Dictionary<string, string> ps = new Dictionary<string, string>();
-            ps.Add("appid", this.config.GetValue<string>("AppId"));
+            ps.Add("appid", WxPayConfig.APPID);
             ps.Add("redirect_uri", this.config.GetValue<string>("Server") + "/authorization/getuserinfo");
             ps.Add("response_type", "code");
             ps.Add("scope", WeChatDefaults.BaseScope);
@@ -61,8 +62,8 @@ namespace Vege.Controllers
                 {
                     var tokenRequestParameters = new Dictionary<string, string>()
                     {
-                        {"appid",this.config.GetValue<string>("AppId") },
-                        {"secret",this.config.GetValue<string>("AppSecret") },
+                        {"appid",WxPayConfig.APPID },
+                        {"secret",WxPayConfig.APPSECRET },
                         {"code",code },
                         {"grant_type","authorization_code" }
                     };
@@ -93,7 +94,7 @@ namespace Vege.Controllers
                             //check if exists
                             if (await this.vegeRepository.CheckUserExists(openid))
                             {
-                                return Redirect(this.config["Server"] + "login" + "/" + openid);
+                                return Redirect(this.config["Server"] + "/login" + "/" + openid);
                             }
                             else
                             {
@@ -146,7 +147,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
                 return Ok(result);
             }
         }
@@ -177,7 +178,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -222,7 +223,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
 
             return Ok(result);
@@ -250,11 +251,17 @@ namespace Vege.Controllers
             }
         }
 
+        [HttpGet("wxpaynotify")]
+        public IActionResult notifyWxPay()
+        {
+            return Ok();
+        }
+
         [HttpGet("getclientip")]
         public IActionResult getClientIp()
         {
             var ip = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return Ok(ip);
+            return Ok(new { ip = ip });
         }
     }
 }

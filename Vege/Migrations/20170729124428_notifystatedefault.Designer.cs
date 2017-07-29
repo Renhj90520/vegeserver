@@ -8,9 +8,10 @@ using Vege.Models;
 namespace Vege.Migrations
 {
     [DbContext(typeof(VegeContext))]
-    partial class VegeContextModelSnapshot : ModelSnapshot
+    [Migration("20170729124428_notifystatedefault")]
+    partial class notifystatedefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2");

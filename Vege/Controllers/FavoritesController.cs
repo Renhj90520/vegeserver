@@ -37,7 +37,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -56,7 +56,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }
@@ -81,7 +81,7 @@ namespace Vege.Controllers
             {
                 result.state = 0;
                 result.message = ex.Message;
-                log.LogError(ex.StackTrace);
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
             }
             return Ok(result);
         }

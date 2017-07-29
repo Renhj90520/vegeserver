@@ -15,5 +15,7 @@ namespace Vege.Models
         public string Name { get; set; }
         [MaxLength(70)]
         public string IconPath { get; set; }
+        [MaxLength(1)]
+        public string State { get; set; } = "1";
     }
 }

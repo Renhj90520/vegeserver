@@ -11,10 +11,16 @@ namespace Vege.Utils
     {
         public static string encrypt(string origin)
         {
-            byte[] originBytes = Encoding.UTF8.GetBytes(origin);
+
+            //byte[] originBytes = Encoding.UTF8.GetBytes(origin);
+            ASCIIEncoding enc = new ASCIIEncoding();
+            var originBytes = enc.GetBytes(origin);
             var sha1 = SHA1.Create();
             var hash = sha1.ComputeHash(originBytes);
-            return Encoding.UTF8.GetString(hash);
+
+            var tempStr = BitConverter.ToString(hash);
+            tempStr = tempStr.Replace("-", "").ToLower();
+            return tempStr;
         }
     }
 }

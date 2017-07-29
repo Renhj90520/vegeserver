@@ -6,6 +6,7 @@ using System.Text;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WxPayAPI
 {
@@ -204,10 +205,10 @@ namespace WxPayAPI
             {
                 throw new WxPayException("退款申请接口中，缺少必填参数refund_fee！");
             }
-            else if (!inputObj.IsSet("op_user_id"))
-            {
-                throw new WxPayException("退款申请接口中，缺少必填参数op_user_id！");
-            }
+            //else if (!inputObj.IsSet("op_user_id"))
+            //{
+            //    throw new WxPayException("退款申请接口中，缺少必填参数op_user_id！");
+            //}
 
             inputObj.SetValue("appid", WxPayConfig.APPID);//公众账号ID
             inputObj.SetValue("mch_id", WxPayConfig.MCHID);//商户号
@@ -216,24 +217,41 @@ namespace WxPayAPI
 
             string xml = inputObj.ToXml();
             //var start = DateTime.Now;
-            using (HttpClient client = new HttpClient())
+            HttpClientHandler handler = new HttpClientHandler();
+            using (MemoryStream ms = new MemoryStream())
             {
+                X509Certificate2 cer = new X509Certificate2(WxPayConfig.SSLCERT_PATH, WxPayConfig.SSLCERT_PASSWORD, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                handler.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+                handler.ClientCertificates.Add(cer);
+            }
+            using (HttpClient client = new HttpClient(handler))
+            {
+                client.Timeout = TimeSpan.FromSeconds(timeOut);
                 log.LogDebug("WxPayApi", "Refund request : " + xml);
-                var resp = await client.PostAsync(url, new StringContent(xml));
-                if (resp.IsSuccessStatusCode)
+                try
                 {
-                    var reback = await resp.Content.ReadAsStringAsync();
-                    log.LogDebug("WxPayApi", "Refund response : " + reback);
-                    //var end = DateTime.Now;
-                    //int timeCost = (int)((end - start).TotalMilliseconds);//获得接口耗时
+                    var resp = await client.PostAsync(url, new StringContent(xml, Encoding.UTF8, "text/xml"));
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        var reback = await resp.Content.ReadAsStringAsync();
+                        log.LogDebug("WxPayApi", "Refund response : " + reback);
+                        //var end = DateTime.Now;
+                        //int timeCost = (int)((end - start).TotalMilliseconds);//获得接口耗时
 
-                    //将xml格式的结果转换为对象以返回
-                    WxPayData result = new WxPayData(log);
-                    result.FromXml(reback);
+                        //将xml格式的结果转换为对象以返回
+                        WxPayData result = new WxPayData(log);
+                        result.FromXml(reback);
 
-                    //ReportCostTime(url, timeCost, result);//测速上报
+                        //ReportCostTime(url, timeCost, result);//测速上报
 
-                    return result;
+                        return result;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.LogError(ex.InnerException.Message + Environment.NewLine + ex.InnerException.StackTrace);
+                    throw;
                 }
             }
 
@@ -651,10 +669,10 @@ namespace WxPayAPI
         * 根据当前系统时间加随机序列来生成订单号
          * @return 订单号
 */
-        public static string GenerateOutTradeNo()
+        public static string GenerateOutTradeNo(int id)
         {
             var ran = new Random();
-            return string.Format("{0}{1}{2}", WxPayConfig.MCHID, DateTime.Now.ToString("yyyyMMddHHmmss"), ran.Next(999));
+            return string.Format("{0}{1}-{2}", DateTime.Now.ToString("yyyyMMddHHmmss"), ran.Next(999), id);
         }
 
         /**

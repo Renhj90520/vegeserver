@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,18 +13,19 @@ namespace Vege.Utils
 {
     public class WXHelper
     {
-        public async static Task<WXConfig> getWxConfig(string appId, string appsecret, string server, string mch_id, string key, IMemoryCache cache)
+        public async static Task<WXConfig> getWxConfig(string appId, string server, string prepayid, string key, IMemoryCache cache, ILogger log)
         {
             WXConfig config = new WXConfig();
-            var ticket = await getTicket(cache, appId, appsecret);
-            var nonceStr = Guid.NewGuid().ToString();
+            //var ticket = await getTicket(cache, appId, appsecret);
+            //log.LogDebug("Ticket is : " + ticket);
+            //var nonceStr = Guid.NewGuid().ToString();
 
             config.appId = appId;
-            config.timestamp = GenerateTimeStamp();
-            config.signature = GenerateSignature(ticket, nonceStr, config.timestamp, server);
-            config.nonceStr = nonceStr;
+            //config.timestamp = GenerateTimeStamp();
+            //config.signature = GenerateSignature(ticket, nonceStr, config.timestamp, server);
+            //config.nonceStr = nonceStr;
+            config.prepayid = prepayid;
             config.key = key;
-            config.mch_id = mch_id;
             return config;
         }
 
@@ -58,7 +60,7 @@ namespace Vege.Utils
 
         private static string GenerateSignature(string ticket, string nonceStr, string timestamp, string url)
         {
-            var info = "jsapi_ticket = " + ticket + " & noncestr = " + nonceStr + " & timestamp = " + timestamp + " & url = " + url;
+            var info = "jsapi_ticket=" + ticket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + url;
             return SHA1Encrypter.encrypt(info);
         }
 

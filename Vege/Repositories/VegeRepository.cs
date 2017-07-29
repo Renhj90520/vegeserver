@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vege.DTO;
 using Vege.Models;
+using Vege.Utils;
 using WxPayAPI;
 
 namespace Vege.Repositories
@@ -38,6 +39,9 @@ namespace Vege.Repositories
 
         public async Task<Product> AddProduct(Product product)
         {
+            var maxseq = await context.Products.Where(p => p.CategoryId == product.CategoryId).Select(p => p.Sequence).MaxAsync(p => p);
+            product.Sequence = maxseq + 1;
+
             var newProduct = this.context.Products.Add(product).Entity;
             if (await this.context.SaveChangesAsync() > 0)
             {
@@ -59,10 +63,13 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name)
+        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name, int? state)
         {
-            var products = this.context.Products.Include(p => p.Pictures).Select(p => p)
-            .Where(p => p.State == 1);
+            var products = this.context.Products.Include(p => p.Pictures).Select(p => p);
+            if (state != null)
+            {
+                products = products.Where(p => p.State == state);
+            }
 
             if (id == null && catetoryId != null)
             {
@@ -70,7 +77,7 @@ namespace Vege.Repositories
             }
             if (id == null && !string.IsNullOrEmpty(name))
             {
-                products = products.Where(p => p.Name.Contains(name));
+                products = products.Where(p => p.Name.ToLower().Contains(name.ToLower()));
             }
             if (id != null)
             {
@@ -94,7 +101,7 @@ namespace Vege.Repositories
             //                 Step = p.Step,
             //                 State = p.State
             //             });
-
+            products = products.OrderBy(p => p.Sequence);
             var result = new ItemsResult<Product>();
             result.count = products.Count();
             if (index != null)
@@ -208,7 +215,7 @@ namespace Vege.Repositories
             }
             if (!string.IsNullOrEmpty(keyword))
             {
-                orders = orders.Where(o => (o.Name.Contains(keyword) || o.Phone.Contains(keyword)));
+                orders = orders.Where(o => (o.Name.ToLower().Contains(keyword.ToLower()) || o.Phone.Contains(keyword)));
             }
             if (begin != null)
             {
@@ -263,8 +270,12 @@ namespace Vege.Repositories
             return (await this.context.SaveChangesAsync() > 0);
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategories()
+        public async Task<IEnumerable<Category>> GetAllCategories(string state)
         {
+            if (!string.IsNullOrEmpty(state))
+            {
+                return (await this.context.Categories.Where(c => c.State == state).ToListAsync());
+            }
             return (await this.context.Categories.ToListAsync());
         }
 
@@ -347,7 +358,7 @@ namespace Vege.Repositories
                 return false;
             }
             JsonPatchDocument<Order> orderPatch = new JsonPatchDocument<Order>();
-            var oper = new Operation<Order>() { op = "replace", path = "/state", value = "4" };
+            var oper = new Operation<Order>() { op = "replace", path = "/State", value = "4" };
             orderPatch.Operations.Add(oper);
             orderPatch.ApplyTo(order);
             return (await this.context.SaveChangesAsync()) > 0;
@@ -373,7 +384,7 @@ namespace Vege.Repositories
             if (category != null)
             {
                 JsonPatchDocument<Category> jsonPatchDoc = new JsonPatchDocument<Category>();
-                var oper = new Operation<Category> { op = "replace", path = "iconPath", value = "" };
+                var oper = new Operation<Category> { op = "replace", path = "IconPath", value = "" };
                 jsonPatchDoc.Operations.Add(oper);
                 jsonPatchDoc.ApplyTo(category);
                 return (await this.context.SaveChangesAsync() > 0);
@@ -478,16 +489,23 @@ namespace Vege.Repositories
             return user != null;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers(string type)
+        public async Task<ItemsResult<User>> GetAllUsers(int? index, int? perPage, string keyword)
         {
-            if (type == "0")
+            var result = new ItemsResult<User>();
+            var users = this.context.Users.Where(u => !string.IsNullOrEmpty(u.OpenId));
+            if (!string.IsNullOrEmpty(keyword))
             {
-                return await this.context.Users.Where(u => !string.IsNullOrEmpty(u.OpenId)).ToListAsync();
+                users = users.Where(u => u.Name.ToLower().Contains(keyword.ToLower()) || u.OpenId.ToLower().Contains(keyword.ToLower()));
             }
-            else
+
+            result.count = await users.CountAsync();
+            if (index != null && perPage != null)
             {
-                return await this.context.Users.Where(u => string.IsNullOrEmpty(u.OpenId)).ToListAsync();
+                users = users.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
             }
+
+            result.items = await users.ToListAsync();
+            return result;
         }
 
         public async Task<bool> CheckUserExists(string userName, string password)
@@ -564,10 +582,10 @@ namespace Vege.Repositories
                     if (!string.IsNullOrEmpty(order.WXOrderId))
                     {
                         WxPayData data = new WxPayData(log);
-                        data.SetValue("transaction_id", order.WXOrderId);
+                        data.SetValue("out_trade_no", order.WXOrderId);
                         data.SetValue("total_fee", wrapper.TotalCost);
                         data.SetValue("refund_fee", wrapper.RefundCost);
-                        data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo());
+                        data.SetValue("out_refund_no", WxPayApi.GenerateOutTradeNo(id));
 
                         WxPayData res = await WxPayApi.Refund(data, log, 15);
                         if (res != null)
@@ -611,6 +629,58 @@ namespace Vege.Repositories
                 result.message = "订单不存在";
             }
 
+        }
+
+        public async Task<bool> reorder(int id1, int id2)
+        {
+            var pro1 = await context.Products.FindAsync(id1);
+            if (pro1 != null)
+            {
+                var pro2 = await context.Products.FindAsync(id2);
+                if (pro2 != null)
+                {
+                    var seq1 = pro1.Sequence;
+                    var seq2 = pro2.Sequence;
+                    pro1.Sequence = seq2;
+                    pro2.Sequence = seq1;
+                    return (await context.SaveChangesAsync()) > 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> changePwd(string username, string oldpwd, string newpwd, Result<bool> result)
+        {
+            var encryptedOld = MD5Encrypter.GetMD5Hash(oldpwd);
+            var user = await context.Users.Where(u => u.UserName == username && u.Password == encryptedOld).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.Password = MD5Encrypter.GetMD5Hash(newpwd);
+                return (await context.SaveChangesAsync()) > 0;
+            }
+            else
+            {
+                result.message = "旧密码错误";
+                return false;
+            }
+        }
+
+        public async Task<bool> patchCate(int id, JsonPatchDocument<Category> patchDoc)
+        {
+            var cate = await context.Categories.FindAsync(id);
+            if (cate != null)
+            {
+                patchDoc.ApplyTo(cate);
+                return (await context.SaveChangesAsync() > 0);
+            }
+            return false;
         }
     }
 }
