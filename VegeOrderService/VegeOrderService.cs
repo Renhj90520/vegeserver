@@ -25,7 +25,6 @@ namespace VegeOrderService
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string devkey = ConfigurationManager.AppSettings.Get("devkey");
         private string devsecret = ConfigurationManager.AppSettings.Get("devsecret");
-        private VegeContext context = new VegeContext();
         public VegeOrderService()
         {
             InitializeComponent();
@@ -54,52 +53,54 @@ namespace VegeOrderService
             log.Info("推送开始");
             try
             {
-
-
-                var ordersUnNotified = await this.context.Orders.Where(o => o.NotifyState == "0" || o.NotifyState == "2").ToListAsync();
-                if (ordersUnNotified.Count() > 0)
+                using (VegeContext context = new VegeContext())
                 {
-                    var ids = ordersUnNotified.Select(o => o.Id).ToArray();
-                    JPushClient jClient = new JPushClient(devkey, devsecret);
-                    PushPayload payload = PushObject_Droid_Alert(string.Join(",", ids));
-                    try
+                    var ordersUnNotified = await context.Orders.Where(o => o.NotifyState == "0" || o.NotifyState == "2").ToListAsync();
+                    if (ordersUnNotified.Count() > 0)
                     {
-                        var result = jClient.SendPush(payload);
-
-                        System.Threading.Thread.Sleep(10000);
-
-                        var apiResultv3 = jClient.getReceivedApi_v3(result.msg_id.ToString());
-                        if (apiResultv3.isResultOK())
+                        var ids = ordersUnNotified.Select(o => o.Id).ToArray();
+                        log.Debug("存在新订单，订单ids:" + string.Join(",", ids));
+                        JPushClient jClient = new JPushClient(devkey, devsecret);
+                        PushPayload payload = PushObject_Droid_Alert(string.Join(",", ids));
+                        try
                         {
-                            ordersUnNotified.ForEach(o =>
-                            {
-                                if (o.State == 1)
-                                {
-                                    o.NotifyState = "1";
-                                }
-                                else if (o.State == 2)
-                                {
-                                    o.NotifyState = "3";
-                                }
-                            });
+                            var result = jClient.SendPush(payload);
 
-                            await this.context.SaveChangesAsync();
+                            System.Threading.Thread.Sleep(10000);
+
+                            var apiResultv3 = jClient.getReceivedApi_v3(result.msg_id.ToString());
+                            if (apiResultv3.isResultOK())
+                            {
+                                ordersUnNotified.ForEach(o =>
+                                {
+                                    if (o.State == 0)
+                                    {
+                                        o.NotifyState = "1";
+                                    }
+                                    else if (o.State == 1)
+                                    {
+                                        o.NotifyState = "3";
+                                    }
+                                });
+
+                                await context.SaveChangesAsync();
+                            }
                         }
-                    }
-                    catch (APIRequestException ex)
-                    {
-                        log.Error("Error response from JPush server. Should review and fix it. ");
-                        log.Error("HTTP Status: " + ex.Status);
-                        log.Error("Error Code: " + ex.ErrorCode);
-                        log.Error("Error Message: " + ex.ErrorMessage);
-                    }
-                    catch (APIConnectionException ex)
-                    {
-                        log.Error("极光推送连接错误", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("极光推送错误", ex);
+                        catch (APIRequestException ex)
+                        {
+                            log.Error("Error response from JPush server. Should review and fix it. ");
+                            log.Error("HTTP Status: " + ex.Status);
+                            log.Error("Error Code: " + ex.ErrorCode);
+                            log.Error("Error Message: " + ex.ErrorMessage);
+                        }
+                        catch (APIConnectionException ex)
+                        {
+                            log.Error("极光推送连接错误", ex);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error("极光推送错误", ex);
+                        }
                     }
                 }
             }
