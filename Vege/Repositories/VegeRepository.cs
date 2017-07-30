@@ -68,7 +68,7 @@ namespace Vege.Repositories
             var products = this.context.Products.Include(p => p.Pictures).Select(p => p);
             if (state != null)
             {
-                products = products.Where(p => p.State == state);
+                products = products.Where(p => p.State == state.Value);
             }
 
             if (id == null && catetoryId != null)
@@ -229,7 +229,7 @@ namespace Vege.Repositories
             {
                 if (noshowRemove.Value)
                 {
-                    orders = orders.Where(o => o.State != 7);
+                    orders = orders.Where(o => o.State != 7 && o.State != 4);
                 }
             }
             if (state != null)
@@ -358,10 +358,10 @@ namespace Vege.Repositories
                 return false;
             }
             JsonPatchDocument<Order> orderPatch = new JsonPatchDocument<Order>();
-            var oper = new Operation<Order>() { op = "replace", path = "/State", value = "4" };
+            var oper = new Operation<Order>() { op = "replace", path = "/State", value = "7" };
             orderPatch.Operations.Add(oper);
             orderPatch.ApplyTo(order);
-            return (await this.context.SaveChangesAsync()) > 0;
+            return ((await this.context.SaveChangesAsync()) > 0);
         }
 
         public async Task<bool> RemoveProductPic(string picpath)

@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace Vege.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
@@ -30,6 +29,7 @@ namespace Vege.Controllers
             this.log = log;
         }
         // POST api/values
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Category category)
         {
@@ -76,6 +76,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("{id}/pictures/{picPath}")]
         public async Task<IActionResult> RemovePic(int id, string picPath)
         {
@@ -105,6 +106,7 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
@@ -132,6 +134,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateCate(int id, [FromBody]Category cate)
         {
@@ -157,6 +160,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> patchCate(int id, [FromBody]JsonPatchDocument<Category> patchDoc)
         {

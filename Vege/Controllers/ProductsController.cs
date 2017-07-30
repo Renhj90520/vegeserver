@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Vege.Controllers
 {
-    [Authorize]
     [Route("api/[controller]/")]
     public class ProductsController : Controller
     {
@@ -47,6 +46,7 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+        [Authorize]
         [HttpPost("")]
         public async Task<IActionResult> AddProduct([FromBody]Product product)
         {
@@ -75,6 +75,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("pictures/{picpath}")]
         public async Task<IActionResult> RemovePic(string picpath)
         {
@@ -105,6 +106,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody]Product newProduct)
         {
@@ -125,6 +127,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchProduct(int id, [FromBody]JsonPatchDocument<Product> patchDoc)
         {
@@ -149,6 +152,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPatch("exchange/{id1}/{id2}")]
         public async Task<IActionResult> ReOrder(int id1, int id2)
         {
@@ -165,6 +169,7 @@ namespace Vege.Controllers
                 {
                     result.state = 0;
                     result.message = "商品不存在";
+                    log.LogDebug("排序返回false 商品 id:" + id1 + "," + id2);
                 }
             }
             catch (Exception ex)

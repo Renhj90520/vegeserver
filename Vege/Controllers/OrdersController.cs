@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Vege.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
@@ -46,8 +45,7 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
-
-        // POST api/values
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Order order)
         {
@@ -68,6 +66,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody]JsonPatchDocument<Order> patchDoc)
         {
@@ -93,6 +92,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {

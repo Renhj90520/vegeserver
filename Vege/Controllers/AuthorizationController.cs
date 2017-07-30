@@ -94,7 +94,7 @@ namespace Vege.Controllers
                             //check if exists
                             if (await this.vegeRepository.CheckUserExists(openid))
                             {
-                                return Redirect(this.config["Server"] + "/login" + "/" + openid);
+                                return Redirect(this.config["Server"] + "/login/" + "?openid=" + openid);
                             }
                             else
                             {
@@ -112,7 +112,7 @@ namespace Vege.Controllers
                                     };
                                     if ((await this.vegeRepository.AddUser(newUser)) != null)
                                     {
-                                        return Redirect(this.config["Server"] + "login" + "/" + openid);
+                                        return Redirect(this.config["Server"] + "/login/" + "?openid=" + openid);
                                     }
                                     else
                                     {
