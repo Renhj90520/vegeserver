@@ -93,5 +93,24 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUnit(int id)
+        {
+            var result = new Result<bool>();
+            try
+            {
+                result.body = await this.vegeRepository.DeleteUnit(id);
+                result.state = 1;
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
     }
 }

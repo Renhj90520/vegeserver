@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Vege.Models;
 
@@ -13,17 +15,21 @@ namespace Vege.Utils
 {
     public class WXHelper
     {
-        public async static Task<WXConfig> getWxConfig(string appId, string server, string prepayid, string key, IMemoryCache cache, ILogger log)
+        public async static Task<WXConfig> getWxConfig(string appId, string appsecret, string server, string prepayid, string key, IMemoryCache cache, ILogger log)
         {
             WXConfig config = new WXConfig();
-            //var ticket = await getTicket(cache, appId, appsecret);
-            //log.LogDebug("Ticket is : " + ticket);
-            //var nonceStr = Guid.NewGuid().ToString();
+            var ticket = await getTicket(cache, appId, appsecret);
+            log.LogDebug("Ticket is : " + ticket);
+            var nonceStr = Guid.NewGuid().ToString();
+            log.LogDebug("nonceStr is : " + nonceStr);
 
             config.appId = appId;
-            //config.timestamp = GenerateTimeStamp();
-            //config.signature = GenerateSignature(ticket, nonceStr, config.timestamp, server);
-            //config.nonceStr = nonceStr;
+            log.LogDebug("appid is: " + appId);
+            config.timestamp = GenerateTimeStamp();
+            log.LogDebug("timestamp is : " + config.timestamp);
+            config.signature = GenerateSignature(ticket, nonceStr, config.timestamp, server);
+            log.LogDebug("signature is : " + config.signature);
+            config.nonceStr = nonceStr;
             config.prepayid = prepayid;
             config.key = key;
             return config;
@@ -68,6 +74,19 @@ namespace Vege.Utils
         {
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalSeconds).ToString();
+        }
+
+        public static string GetAbsoluteUri(HttpRequest request)
+        {
+            return request.Headers["Referer"];
+            //return new StringBuilder()
+            //    .Append(request.Scheme)
+            //    .Append("://")
+            //    .Append(request.Host)
+            //    .Append(request.PathBase)
+            //    .Append(request.Path)
+            //    .Append(request.QueryString)
+            //    .ToString();
         }
     }
 }

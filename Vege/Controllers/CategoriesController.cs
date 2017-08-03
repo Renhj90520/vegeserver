@@ -185,5 +185,31 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpPut("reorder/{id1}/{id2}")]
+        public async Task<IActionResult> ReorderCate(int id1, int id2)
+        {
+            var result = new Result<bool>();
+            try
+            {
+                if (await this.vegeRepository.reorderCate(id1, id2))
+                {
+                    result.body = true;
+                    result.state = 1;
+                }
+                else
+                {
+                    result.state = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
     }
 }

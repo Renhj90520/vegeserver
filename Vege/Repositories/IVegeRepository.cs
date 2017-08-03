@@ -49,5 +49,19 @@ namespace Vege.Repositories
         Task<bool> changePwd(string username, string oldpwd, string newpwd, Result<bool> result);
 
         Task<bool> patchCate(int id, JsonPatchDocument<Category> patchDoc);
+
+        Task<bool> reorderCate(int id1, int id2);
+
+        Task<Coupon> addCoupon(Coupon coupon);
+
+        Task patchCoupon(int id, JsonPatchDocument<Coupon> patchDoc, Result<bool> result);
+
+        Task updateCoupon(int id, Coupon coupon, Result<bool> result);
+
+        Task<IEnumerable<Coupon>> getAllCoupons();
+
+        Task<Coupon> getValidityCoupon();
+
+        Task<bool> removeCouponPic(int id);
     }
 }

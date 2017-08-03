@@ -26,6 +26,8 @@ namespace Vege.Repositories
 
         public async Task<Category> AddCategory(Category category)
         {
+            var maxSeq = await context.Categories.Select(c => c.Sequential).MaxAsync();
+            category.Sequential = maxSeq + 1;
             var newCate = this.context.Categories.Add(category).Entity;
             if ((await this.context.SaveChangesAsync()) > 0)
             {
@@ -265,18 +267,25 @@ namespace Vege.Repositories
 
         public async Task<bool> DeleteUnit(int id)
         {
-            var unit = await this.context.Units.FirstOrDefaultAsync(u => u.Id == id);
-            this.context.Remove(unit);
-            return (await this.context.SaveChangesAsync() > 0);
+            var unit = await this.context.Units.FindAsync(id);
+            if (unit != null)
+            {
+                this.context.Remove(unit);
+                return (await this.context.SaveChangesAsync() > 0);
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public async Task<IEnumerable<Category>> GetAllCategories(string state)
         {
             if (!string.IsNullOrEmpty(state))
             {
-                return (await this.context.Categories.Where(c => c.State == state).ToListAsync());
+                return (await this.context.Categories.Where(c => c.State == state).OrderBy(c => c.Sequential).ToListAsync());
             }
-            return (await this.context.Categories.ToListAsync());
+            return (await this.context.Categories.OrderBy(c => c.Sequential).ToListAsync());
         }
 
         public async Task<Picture> AddPicture(string path)
@@ -681,6 +690,124 @@ namespace Vege.Repositories
                 return (await context.SaveChangesAsync() > 0);
             }
             return false;
+        }
+
+        public async Task<bool> reorderCate(int id1, int id2)
+        {
+            var cate1 = await context.Categories.FindAsync(id1);
+            if (cate1 != null)
+            {
+                var cate2 = await context.Categories.FindAsync(id2);
+                if (cate2 != null)
+                {
+                    var tmp = cate1.Sequential;
+                    cate1.Sequential = cate2.Sequential;
+                    cate2.Sequential = tmp;
+                    return (await context.SaveChangesAsync() > 0);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<Coupon> addCoupon(Coupon coupon)
+        {
+            var newCoupon = await context.Coupons.AddAsync(coupon);
+            if (await context.SaveChangesAsync() > 0)
+            {
+                return newCoupon.Entity;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task patchCoupon(int id, JsonPatchDocument<Coupon> patchDoc, Result<bool> result)
+        {
+            var coupon = await context.Coupons.FindAsync(id);
+            if (coupon != null)
+            {
+                patchDoc.ApplyTo(coupon);
+                if (await context.SaveChangesAsync() > 0)
+                {
+                    result.body = true;
+                    result.state = 1;
+                }
+                else
+                {
+                    result.body = false;
+                    result.state = 0;
+                    result.message = "修改失败：没有任何修改";
+                }
+            }
+            else
+            {
+                result.body = false;
+                result.state = 0;
+                result.message = "修改失败：优惠券不存在";
+            }
+        }
+
+        public async Task updateCoupon(int id, Coupon coupon, Result<bool> result)
+        {
+            var oldCoupon = await context.Coupons.FindAsync(id);
+            if (oldCoupon != null)
+            {
+                oldCoupon.Code = coupon.Code;
+                oldCoupon.Begin = coupon.Begin;
+                oldCoupon.End = coupon.End;
+                oldCoupon.QR_Path = coupon.QR_Path;
+                context.Coupons.Update(oldCoupon);
+                if (await context.SaveChangesAsync() > 0)
+                {
+                    result.state = 1;
+                    result.body = true;
+                }
+                else
+                {
+                    result.state = 0;
+                    result.message = "修改失败：没有任何修改";
+                }
+            }
+            else
+            {
+                result.state = 0;
+                result.message = "修改失败：优惠券不存在";
+            }
+        }
+
+        public async Task<IEnumerable<Coupon>> getAllCoupons()
+        {
+            return await context.Coupons.ToListAsync();
+        }
+
+        public async Task<Coupon> getValidityCoupon()
+        {
+            return await context.Coupons.Where(c => c.State == 1).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> removeCouponPic(int id)
+        {
+            var coupon = await context.Coupons.FindAsync(id);
+            if (coupon != null)
+            {
+                JsonPatchDocument<Coupon> jsonPatchDoc = new JsonPatchDocument<Coupon>();
+                var oper = new Operation<Coupon> { op = "replace", path = "QR_Path", value = "" };
+                jsonPatchDoc.Operations.Add(oper);
+                jsonPatchDoc.ApplyTo(coupon);
+                return (await this.context.SaveChangesAsync() > 0);
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

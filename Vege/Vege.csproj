@@ -6,13 +6,9 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\uploads\**" />
-    <Compile Remove="wwwroot\新文件夹\**" />
     <Content Remove="wwwroot\uploads\**" />
-    <Content Remove="wwwroot\新文件夹\**" />
     <EmbeddedResource Remove="wwwroot\uploads\**" />
-    <EmbeddedResource Remove="wwwroot\新文件夹\**" />
     <None Remove="wwwroot\uploads\**" />
-    <None Remove="wwwroot\新文件夹\**" />
   </ItemGroup>
 
   <ItemGroup>
