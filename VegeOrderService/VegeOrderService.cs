@@ -11,6 +11,8 @@ using System.Data;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +27,8 @@ namespace VegeOrderService
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string devkey = ConfigurationManager.AppSettings.Get("devkey");
         private string devsecret = ConfigurationManager.AppSettings.Get("devsecret");
+        private string mipushUrl = "https://api.xmpush.xiaomi.com/v3/message/all";
+        private string appPkgName = "com.xjconvenience.vege.vege";
         public VegeOrderService()
         {
             InitializeComponent();
@@ -32,6 +36,7 @@ namespace VegeOrderService
 
         protected override void OnStart(string[] args)
         {
+            Debugger.Launch();
             try
             {
                 log.Info("服务启动开始");
@@ -60,10 +65,44 @@ namespace VegeOrderService
                     {
                         var ids = ordersUnNotified.Select(o => o.Id).ToArray();
                         log.Debug("存在新订单，订单ids:" + string.Join(",", ids));
+
+                        try
+                        {
+                            log.Debug("开始小米推送");
+                            using (HttpClient client = new HttpClient())
+                            {
+                                HttpRequestMessage req = new HttpRequestMessage();
+                                req.Method = HttpMethod.Post;
+                                req.Headers.TryAddWithoutValidation("Authorization", "key=" + ConfigurationManager.AppSettings.Get("mipushsecret"));
+                                req.RequestUri = new Uri(mipushUrl);
+                                List<string> content = new List<string>();
+                                content.Add("description=" + "订单ids:" + string.Join(",", ids));
+                                content.Add("payload=订单ids:" + string.Join(",", ids));
+                                content.Add("restricted_package_name=" + appPkgName);
+                                content.Add("title=方便生活有新订单");
+                                content.Add("pass_through=0");//通知栏消息
+                                content.Add("extra.notify_effect=2");
+                                content.Add("extra.intent_uri=intent:#Intent;action=com.xjconvenience.vege.mipush;end");
+                                content.Add("notify_type=-1");
+                                string contentStr = string.Join("&", content);
+                                log.Debug("小米推送发送内容：" + contentStr);
+                                
+                                req.Content = new StringContent(contentStr, Encoding.UTF8, "application/x-www-form-urlencoded");
+                                var mipushResp = await client.SendAsync(req);
+                                var mipushResult = await mipushResp.Content.ReadAsStringAsync();
+                                log.Debug("小米推送返回结果：" + mipushResult);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error("小米推送错误", ex);
+                        }
+
                         JPushClient jClient = new JPushClient(devkey, devsecret);
                         PushPayload payload = PushObject_Droid_Alert(string.Join(",", ids));
                         try
                         {
+                            log.Debug("开始极光推送");
                             var result = jClient.SendPush(payload);
 
                             System.Threading.Thread.Sleep(10000);
@@ -71,19 +110,21 @@ namespace VegeOrderService
                             var apiResultv3 = jClient.getReceivedApi_v3(result.msg_id.ToString());
                             if (apiResultv3.isResultOK())
                             {
+                                log.Debug("开始更新推送状态");
                                 ordersUnNotified.ForEach(o =>
                                 {
-                                    if (o.State == 0)
+                                    if (o.IsPaid == "0")
                                     {
                                         o.NotifyState = "1";
                                     }
-                                    else if (o.State == 1)
+                                    else if (o.IsPaid == "1")
                                     {
                                         o.NotifyState = "3";
                                     }
                                 });
 
                                 await context.SaveChangesAsync();
+                                log.Debug("更新推送状态结束");
                             }
                         }
                         catch (APIRequestException ex)

@@ -32,9 +32,11 @@ namespace VegeOrderService.Models
         public string NotifyState { get; set; } = "0";
         [MaxLength(32)]
         public string WXOrderId { get; set; }
-        public long Latitude { get; set; }
-        public long Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         [MaxLength(160)]
         public string RefundNote { get; set; }
+        [MaxLength(1)]
+        public string IsPaid { get; set; } = "0";
     }
 }

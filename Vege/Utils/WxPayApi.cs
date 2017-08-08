@@ -216,6 +216,7 @@ namespace WxPayAPI
             inputObj.SetValue("sign", inputObj.MakeSign());//签名
 
             string xml = inputObj.ToXml();
+            log.LogDebug("WxPayApi", "Refund request : " + xml);
             //var start = DateTime.Now;
             HttpClientHandler handler = new HttpClientHandler();
             using (MemoryStream ms = new MemoryStream())

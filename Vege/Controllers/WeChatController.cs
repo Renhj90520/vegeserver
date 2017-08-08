@@ -104,8 +104,8 @@ namespace Vege.Controllers
                 var coupon = await vegeRepository.getValidityCoupon();
                 if (coupon != null)
                 {
-                    data.SetValue("goods_tag", coupon.Code);
-                    log.LogDebug("goods_tag is : " + coupon.Code);
+                    data.SetValue("goods_tag", coupon.Code.Trim());
+                    log.LogDebug("goods_tag is : " + coupon.Code.Trim());
                 }
                 WxPayData res = await WxPayApi.UnifiedOrder(data, log, 15);
                 if ("SUCCESS" == res.GetValue("return_code").ToString())
