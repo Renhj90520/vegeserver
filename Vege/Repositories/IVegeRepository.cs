@@ -10,7 +10,8 @@ namespace Vege.Repositories
 {
     public interface IVegeRepository
     {
-        ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name, int? state);
+        ItemsResult<ProductDTO> GetAllProduct(int? catetoryId, int? index, int? perPage, string name, int? state);
+        Task<Product> GetProduct(int id);
         Task<Product> AddProduct(Product product);
         Task<Category> AddCategory(Category category);
         Task<IEnumerable<Category>> GetAllCategories(string state);

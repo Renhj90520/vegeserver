@@ -65,7 +65,7 @@ namespace Vege.Repositories
             }
         }
 
-        public ItemsResult<Product> GetAllProduct(int? id, int? catetoryId, int? index, int? perPage, string name, int? state)
+        public ItemsResult<ProductDTO> GetAllProduct(int? catetoryId, int? index, int? perPage, string name, int? state)
         {
             var products = this.context.Products.Include(p => p.Pictures).Select(p => p);
             if (state != null)
@@ -73,17 +73,13 @@ namespace Vege.Repositories
                 products = products.Where(p => p.State == state.Value);
             }
 
-            if (id == null && catetoryId != null)
+            if (catetoryId != null)
             {
                 products = products.Where(p => p.CategoryId == catetoryId);
             }
-            if (id == null && !string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 products = products.Where(p => p.Name.ToLower().Contains(name.ToLower()));
-            }
-            if (id != null)
-            {
-                products = products.Where(p => p.Id == id);
             }
 
             //var items = (from p in products
@@ -104,15 +100,40 @@ namespace Vege.Repositories
             //                 State = p.State
             //             });
             products = products.OrderBy(p => p.Sequence);
-            var result = new ItemsResult<Product>();
+            var result = new ItemsResult<ProductDTO>();
             result.count = products.Count();
             if (index != null)
             {
-                result.items = products.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value);
+                result.items = products.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value)
+                    .Select(p => new ProductDTO
+                    {
+                        Id = p.Id,
+                        CategoryId = p.CategoryId,
+                        Name = p.Name,
+                        Pictures = p.Pictures,
+                        Price = p.Price,
+                        Sequence = p.Sequence,
+                        Step = p.Step,
+                        UnitId = p.UnitId,
+                        UnitName = p.UnitName,
+                        State = p.State
+                    });
             }
             else
             {
-                result.items = products;
+                result.items = products.Select(p => new ProductDTO
+                {
+                    Id = p.Id,
+                    CategoryId = p.CategoryId,
+                    Name = p.Name,
+                    Pictures = p.Pictures,
+                    Price = p.Price,
+                    Sequence = p.Sequence,
+                    Step = p.Step,
+                    UnitId = p.UnitId,
+                    UnitName = p.UnitName,
+                    State = p.State
+                });
             }
 
             return result;
@@ -200,13 +221,11 @@ namespace Vege.Repositories
                     Id = oop.Id,
                     CategoryId = pp.CategoryId,
                     Count = oop.Count,
-                    Description = pp.Description,
                     Name = pp.Name,
                     Pictures = pp.Pictures,
                     Price = oop.Price,
                     State = pp.State,
                     Step = pp.Step,
-                    TotalCount = pp.TotalCount,
                     UnitId = pp.UnitId,
                     UnitName = pp.UnitName
                 })
@@ -808,6 +827,12 @@ namespace Vege.Repositories
             {
                 return true;
             }
+        }
+
+        public async Task<Product> GetProduct(int id)
+        {
+            var product = await this.context.Products.Include(p => p.Pictures).Where(p => p.Id == id).FirstOrDefaultAsync();
+            return product;
         }
     }
 }

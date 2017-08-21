@@ -263,5 +263,26 @@ namespace Vege.Controllers
             var ip = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             return Ok(new { ip = ip });
         }
+
+        [HttpGet("checktime")]
+        public IActionResult checkTime()
+        {
+            var result = new Result<bool>();
+            try
+            {
+                DateTime now = DateTime.Now;
+                DateTime begin = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0);
+                DateTime end = new DateTime(now.Year, now.Month, now.Day, 20, 30, 0);
+                result.body = now.CompareTo(begin) >= 0 && now.CompareTo(end) <= 0;
+                result.state = 1;
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
     }
 }

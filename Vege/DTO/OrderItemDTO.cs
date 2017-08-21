@@ -6,7 +6,7 @@ using Vege.Models;
 
 namespace Vege.DTO
 {
-    public class OrderItemDTO : Product
+    public class OrderItemDTO : ProductDTO
     {
         public double Count { get; set; }
     }

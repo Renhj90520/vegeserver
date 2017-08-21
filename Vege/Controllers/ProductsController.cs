@@ -29,13 +29,13 @@ namespace Vege.Controllers
             this.env = env;
             this.log = log;
         }
-        [HttpGet("{id?}")]
-        public IActionResult GetAllProducts(int? id, [FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name, [FromQuery] int? state)
+        [HttpGet]
+        public IActionResult GetAllProducts([FromQuery]int? category, [FromQuery]int? index, [FromQuery]int? perPage, [FromQuery] string name, [FromQuery] int? state)
         {
-            Result<ItemsResult<Product>> result = new Result<ItemsResult<Product>>();
+            Result<ItemsResult<ProductDTO>> result = new Result<ItemsResult<ProductDTO>>();
             try
             {
-                result.body = this.vegeRepository.GetAllProduct(id, category, index, perPage, name, state);
+                result.body = this.vegeRepository.GetAllProduct(category, index, perPage, name, state);
                 result.state = 1;
             }
             catch (Exception ex)
@@ -46,6 +46,24 @@ namespace Vege.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            Result<Product> result = new Result<Product>();
+            try
+            {
+                result.body = await vegeRepository.GetProduct(id);
+                result.state = 1;
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
+
         [Authorize]
         [HttpPost("")]
         public async Task<IActionResult> AddProduct([FromBody]Product product)
