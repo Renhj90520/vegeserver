@@ -17,6 +17,8 @@ namespace Vege.Models
         public string Password { get; set; }
         [MaxLength(20)]
         public string Name { get; set; }
+        [MaxLength(40)]
+        public string NickName { get; set; }
         [MaxLength(15)]
         public string Phone { get; set; }
         [MaxLength(28)]

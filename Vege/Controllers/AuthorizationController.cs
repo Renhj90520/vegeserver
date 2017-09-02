@@ -21,6 +21,7 @@ using Vege.DTO;
 using Vege.Utils;
 using Microsoft.Extensions.Logging;
 using WxPayAPI;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -98,7 +99,7 @@ namespace Vege.Controllers
                             }
                             else
                             {
-                                var userinfo = await getUserInfo(access_token, openid);
+                                var userinfo = await getUserInfo(access_token, openid, WeChatDefaults.UserInfoEndpoint);
                                 if (!string.IsNullOrEmpty(userinfo))
                                 {
                                     var user = JObject.Parse(userinfo);
@@ -183,6 +184,63 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPatch("updateuserinfo/{openid}")]
+        public async Task<IActionResult> updateUserInfo(string openid)
+        {
+            var result = new Result<User>();
+            try
+            {
+                Dictionary<string, string> ps = new Dictionary<string, string>();
+                ps.Add("grant_type", "client_credential");
+                ps.Add("appid", WxPayConfig.APPID);
+                ps.Add("secret", WxPayConfig.APPSECRET);
+
+                var url = WeChatDefaults.AccessTokenEndpoint + QueryString.Create(ps).ToString();
+
+                using (HttpClient client = new HttpClient())
+                {
+                    var tokenResp = await client.GetAsync(url);
+
+                    if (tokenResp.IsSuccessStatusCode)
+                    {
+                        var tokenStr = await tokenResp.Content.ReadAsStringAsync();
+                        log.LogDebug("获取access_token返回结果：" + tokenStr);
+                        var jobject = JObject.Parse(tokenStr);
+
+                        var access_token = jobject.Value<string>("access_token");
+                        var infoStr = await this.getUserInfo(access_token, openid, WeChatDefaults.UserInfoGetEndPoint);
+                        log.LogDebug("获取用户信息返回结果：" + infoStr);
+
+                        var user = JObject.Parse(infoStr);
+                        User newUser = new User()
+                        {
+                            NickName = user.Value<string>("nickname"),
+                            OpenId = openid,
+                            City = user.Value<string>("city"),
+                            Province = user.Value<string>("province"),
+                            Sex = user.Value<int>("sex")
+                        };
+
+                        await this.vegeRepository.updateUserInfo(newUser, result);
+                    }
+                    else
+                    {
+                        result.state = 0;
+                        result.message = "获取access_token失败";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.state = 0;
+                result.message = ex.Message;
+                log.LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            return Ok(result);
+        }
+
+
         private JwtSecurityToken createToken(Claim[] claims)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["Tokens:Key"]));
@@ -229,7 +287,7 @@ namespace Vege.Controllers
             return Ok(result);
         }
 
-        private async Task<string> getUserInfo(string access_token, string openid)
+        private async Task<string> getUserInfo(string access_token, string openid, string endpoint)
         {
             var queryBuilder = new QueryBuilder()
             {
@@ -237,7 +295,7 @@ namespace Vege.Controllers
                 {"openid",openid },
                 {"lang","zh_CN" }
             };
-            var infoRequest = WeChatDefaults.UserInfoEndpoint + queryBuilder.ToString();
+            var infoRequest = endpoint + queryBuilder.ToString();
             using (var client = new HttpClient())
             {
                 var res = await client.GetAsync(infoRequest);

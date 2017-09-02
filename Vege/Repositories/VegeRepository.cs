@@ -834,5 +834,25 @@ namespace Vege.Repositories
             var product = await this.context.Products.Include(p => p.Pictures).Where(p => p.Id == id).FirstOrDefaultAsync();
             return product;
         }
+
+        public async Task updateUserInfo(User user, Result<User> result)
+        {
+            var u = await context.Users.Where(uu => uu.OpenId == user.OpenId).FirstOrDefaultAsync();
+            u.NickName = user.NickName;
+            u.Sex = user.Sex;
+            u.City = user.City;
+            u.Province = user.Province;
+
+            if (await context.SaveChangesAsync() > 0)
+            {
+                result.state = 1;
+                result.body = u;
+            }
+            else
+            {
+                result.state = 0;
+                result.message = "更新用户信息失败";
+            }
+        }
     }
 }

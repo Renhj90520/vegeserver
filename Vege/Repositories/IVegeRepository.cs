@@ -64,5 +64,7 @@ namespace Vege.Repositories
         Task<Coupon> getValidityCoupon();
 
         Task<bool> removeCouponPic(int id);
+
+        Task updateUserInfo(User user, Result<User> result);
     }
 }
