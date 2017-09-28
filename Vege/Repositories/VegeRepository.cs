@@ -116,7 +116,8 @@ namespace Vege.Repositories
                         Step = p.Step,
                         UnitId = p.UnitId,
                         UnitName = p.UnitName,
-                        State = p.State
+                        State = p.State,
+                        Limit = p.Limit
                     });
             }
             else
@@ -132,7 +133,8 @@ namespace Vege.Repositories
                     Step = p.Step,
                     UnitId = p.UnitId,
                     UnitName = p.UnitName,
-                    State = p.State
+                    State = p.State,
+                    Limit = p.Limit
                 });
             }
 
@@ -852,6 +854,103 @@ namespace Vege.Repositories
             {
                 result.state = 0;
                 result.message = "更新用户信息失败";
+            }
+        }
+
+        public async Task<ItemsResult<Menu>> getAllMenus(int? index, int? perPage, string state)
+        {
+            var menus = context.Menus.Include(m => m.Recipes).Select(m => m);
+            if (!string.IsNullOrEmpty(state))
+            {
+                menus = menus.Where(m => m.State == state);
+            }
+            var result = new ItemsResult<Menu>();
+            if (index != null && perPage != null)
+            {
+                result.count = await menus.CountAsync();
+                result.items = await menus.Skip((index.Value - 1) * perPage.Value).Take(perPage.Value).ToListAsync();
+            }
+            else
+            {
+                result.items = await menus.ToListAsync();
+            }
+            return result;
+        }
+
+        public async Task<bool> delMenu(int id)
+        {
+            var menu = await context.Menus.FindAsync(id);
+            if (menu != null)
+            {
+                context.Menus.Remove(menu);
+                return (await context.SaveChangesAsync() > 0);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<Menu> addMenu(Menu menu)
+        {
+            var newmenu = context.Menus.Add(menu).Entity;
+            if (await context.SaveChangesAsync() > 0)
+            {
+                return newmenu;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<MenuDTO> getMenu(int id)
+        {
+
+            var menu = await context.Menus
+                .Include(m => m.Recipes)
+                .Include(m => m.Steps)
+                .Where(m => m.Id == id)
+                .Select(m => new MenuDTO
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Picture = m.Picture,
+                    State = m.State,
+                    Steps = m.Steps,
+                    Recipes = m.Recipes.Join(context.Products, i => i.ProductId, p => p.Id, (ii, pp) => new RecipesDTO
+                    {
+                        Id = pp.Id,
+                        Name = pp.Name,
+                        Price = pp.Price,
+                        Step = pp.Step,
+                        UnitId = pp.UnitId,
+                        UnitName = pp.UnitName,
+                        Picture = context.Products.Where(p => p.Id == pp.Id).Include(p => p.Pictures).FirstOrDefault().Pictures.ToArray()[0].Path
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+            return menu;
+        }
+
+        public async Task<bool> RemoveMenuPic(int id)
+        {
+            var menu = await context.Menus.FindAsync(id);
+            if (menu != null)
+            {
+                if (string.IsNullOrEmpty(menu.Picture))
+                {
+                    return true;
+                }
+                else
+                {
+                    menu.Picture = string.Empty;
+                    return await context.SaveChangesAsync() > 0;
+                }
+            }
+            else
+            {
+                return true;
             }
         }
     }

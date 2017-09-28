@@ -29,6 +29,9 @@ namespace Vege.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Recipes> Recipes { get; set; }
+        public DbSet<Step> Steps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

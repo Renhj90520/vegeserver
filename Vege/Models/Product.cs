@@ -25,5 +25,6 @@ namespace Vege.Models
         public ICollection<Picture> Pictures { get; set; }
         public int CategoryId { get; set; }
         public int Sequence { get; set; } = 0;
+        public int Limit { get; set; } = 0;
     }
 }

@@ -66,5 +66,10 @@ namespace Vege.Repositories
         Task<bool> removeCouponPic(int id);
 
         Task updateUserInfo(User user, Result<User> result);
+        Task<ItemsResult<Menu>> getAllMenus(int? index, int? perPage, string state);
+        Task<bool> delMenu(int id);
+        Task<Menu> addMenu(Menu menu);
+        Task<MenuDTO> getMenu(int id);
+        Task<bool> RemoveMenuPic(int id);
     }
 }
