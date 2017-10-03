@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vege", "Vege\Vege.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VegeOrderService", "VegeOrderService\VegeOrderService.csproj", "{310B1418-54D0-4796-B070-1044982AD6A2}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{EDCA7A17-B447-4F61-A233-93DF3F97B18E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{310B1418-54D0-4796-B070-1044982AD6A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDCA7A17-B447-4F61-A233-93DF3F97B18E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDCA7A17-B447-4F61-A233-93DF3F97B18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDCA7A17-B447-4F61-A233-93DF3F97B18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDCA7A17-B447-4F61-A233-93DF3F97B18E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

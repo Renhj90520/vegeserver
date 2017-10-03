@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  vege:
+    image: vege
+    build:
+      context: ./Vege
+      dockerfile: Dockerfile
